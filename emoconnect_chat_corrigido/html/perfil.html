@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil - EmoConnect</title>
+  <link rel="stylesheet" href="../css/perfil.css" />
+  <script src="../js/perfil.js"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>🌟 EmoConnect</h1>
+    <p id="datetime"></p>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+        <li><a href="chat.html">Chat</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="profile-layout">
+    <aside class="profile-sidebar">
+      <div class="profile-banner">
+        <p id="daily-message">"Hoje é um bom dia para cuidar de você."</p>
+      </div>
+
+      <img src="user-placeholder.png" alt="Foto de perfil" class="profile-pic" id="profile-img"/>
+
+      <h2 id="profile-name">Fulano de Tal</h2>
+      <p class="bio" id="profile-bio">"Aqui para compartilhar emoções e experiências."</p>
+
+      <button id="edit-profile-btn"><i class="fas fa-edit"></i> Editar Perfil</button>
+      <button id="toggle-public-view"><i class="fas fa-eye"></i> Ver como público</button>
+
+      <div class="progress-bar">
+        <p>Você compartilhou <span id="post-count">0</span> posts 💬</p>
+        <progress id="post-progress" max="10" value="0"></progress>
+      </div>
+
+      <div class="background-selector">
+        <label for="background-theme">🎨 Fundo:</label>
+        <select id="background-theme">
+          <option value="default">Padrão</option>
+          <option value="sunset">Pôr do Sol</option>
+          <option value="floral">Floral</option>
+          <option value="dark">Escuro</option>
+        </select>
+      </div>
+    </aside>
+
+    <section class="profile-main">
+      <div class="tabs">
+        <button class="tab active" data-tab="sobre">Sobre Mim</button>
+        <button class="tab" data-tab="posts">Posts</button>
+        <button class="tab" data-tab="config">Configurações</button>
+      </div>
+
+      <div id="tab-sobre" class="tab-content active">
+        <p><strong>Idade:</strong> <span id="idade">25 anos</span></p>
+        <p><strong>Localização:</strong> <span id="localizacao">São Paulo, Brasil</span></p>
+        <p><strong>Interesses:</strong> <span id="interesses">Música, Livros, Bem-estar</span></p>
+      </div>
+
+      <div id="tab-posts" class="tab-content">
+        <form id="post-form">
+          <textarea id="new-post" placeholder="Escreva algo..."></textarea>
+          <button type="submit"><i class="fas fa-paper-plane"></i> Publicar</button>
+        </form>
+
+        <input type="text" id="search-posts" placeholder="🔎 Buscar post...">
+        <div class="post-list" id="post-list"></div>
+      </div>
+
+      <div id="tab-config" class="tab-content">
+        <p>🚧 Mais configurações em breve!</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="edit-modal">
+    <div class="modal-content">
+      <h3>Editar Perfil</h3>
+      <label>Nome:</label><input type="text" id="edit-name" />
+      <label>Bio:</label><input type="text" id="edit-bio" />
+      <label>Idade:</label><input type="text" id="edit-age" />
+      <label>Localização:</label><input type="text" id="edit-location" />
+      <label>Interesses:</label><input type="text" id="edit-interests" />
+      <button id="save-profile">Salvar</button>
+      <button id="cancel-edit">Cancelar</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 EmoConnect</p>
+  </footer>
+
+  <script src="perfil.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - EmoConnect</title>
+  <link rel="stylesheet" href="../css/chat.css" />
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>🌟 EmoConnect</h1>
+      <p class="slogan">Conecte-se com suas emoções. Compartilhe. Inspire.</p>
+      <nav>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="chat.html">Chat</a></li>
+        </ul>
+      </nav>
+    </div>
+    <button id="toggle-theme" class="theme-toggle" title="Alternar tema">🌙</button>
+  </header>
+
+  <div class="chat-container">
+    <div class="chat-box" id="chat"></div>
+
+    <div class="chat-input">
+      <input type="text" id="mensagemInput" placeholder="Digite sua mensagem..." />
+      <button onclick="enviarMensagem()">Enviar</button>
+    </div>
+
+    <div class="emoji-bar">
+      <button class="emoji-btn">😊</button>
+      <button class="emoji-btn">😢</button>
+      <button class="emoji-btn">😄</button>
+      <button class="emoji-btn">😴</button>
+      <button class="emoji-btn">😤</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 EmoConnect. Você não está sozinho.</p>
+  </footer>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhlJmnNLFlTR9rG-xjQHjs9N3BQJGn8To",
+      authDomain: "emoconnect-67e58.firebaseapp.com",
+      databaseURL: "https://emoconnect-67e58-default-rtdb.firebaseio.com",
+      projectId: "emoconnect-67e58",
+      storageBucket: "emoconnect-67e58.appspot.com",
+      messagingSenderId: "584511384312",
+      appId: "1:584511384312:web:56fba5d6a5e6b0b690e90d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const chatRef = ref(db, "mensagens");
+
+    const chatDiv = document.getElementById("chat");
+
+    function enviarMensagem() {
+      const input = document.getElementById("mensagemInput");
+      const texto = input.value.trim();
+      if (texto !== "") {
+        push(chatRef, {
+          autor: "usuario",
+          texto: texto,
+          timestamp: Date.now()
+        });
+        input.value = "";
+      }
+    }
+
+    // Exibir mensagens no chat
+    onChildAdded(chatRef, (snapshot) => {
+      const msg = snapshot.val();
+      const div = document.createElement("div");
+      div.classList.add("message", msg.autor === "usuario" ? "sent" : "received");
+      div.innerHTML = `${msg.texto}<div class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</div>`;
+      chatDiv.appendChild(div);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+
+    // Emoji buttons
+    document.querySelectorAll(".emoji-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const input = document.getElementById("mensagemInput");
+        input.value += btn.textContent;
+        input.focus();
+      });
+    });
+  </script>
+</body>
+</html>

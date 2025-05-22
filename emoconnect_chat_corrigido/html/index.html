@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Início - EmoConnect</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/main.js"></script>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>🌟 EmoConnect</h1>
+      <p class="slogan">Conecte-se com suas emoções. Compartilhe. Inspire.</p>
+      <nav>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="chat.html">Chat</a></li>
+        </ul>
+      </nav>
+    </div>
+    <button id="toggle-theme" class="theme-toggle" title="Alternar tema">🌙</button>
+
+
+  </header>
+
+  <main>
+    <section class="feelings">
+      <h2>Como você está se sentindo hoje?</h2>
+      <div class="moods-grid">
+        <button class="mood-card" data-mood="Feliz">😊 <span>Feliz</span></button>
+        <button class="mood-card" data-mood="Triste">😢 <span>Triste</span></button>
+        <button class="mood-card" data-mood="Cansado">😴 <span>Cansado</span></button>
+        <button class="mood-card" data-mood="Estressado">😤 <span>Estressado</span></button>
+        <button class="mood-card" data-mood="Ansioso">😬 <span>Ansioso</span></button>
+        <button class="mood-card" data-mood="Calmo">🧘 <span>Calmo</span></button>
+        <button class="mood-card" data-mood="Empolgado">😄 <span>Empolgado</span></button>
+        <button class="mood-card" data-mood="Confuso">🤔 <span>Confuso</span></button>
+      </div>
+      <p id="mood-message"></p>
+    </section>
+    
+    <button class="action-card" id="respirar">🧘 Respirar</button>
+
+    <section class="actions">
+      <h2>O que deseja fazer agora?</h2>
+      <div class="cards">
+        <button class="action-card" id="desabafar">🗣️ Desabafar</button>
+        <button class="action-card" id="relaxar">🎵 Relaxar</button>
+        <button class="action-card" id="motivar">💡 Frase Motivacional</button>
+      </div>
+    </section>
+
+    <section class="mural">
+      <h2>💌 Mural de Apoio</h2>
+      <p>Deixe uma mensagem positiva para outras pessoas:</p>
+      
+      <textarea id="mensagem" placeholder="Digite sua mensagem de apoio..." rows="3"></textarea>
+      <button id="postar">📬 Postar</button>
+    
+      <div id="mural-posts"></div>
+    </section>
+
+    <div class="respiracao-overlay" id="respiracao">
+      <div class="circulo" id="circulo"></div>
+      <p id="fase">Inspire...</p>
+      <button id="fechar-respirar">Fechar</button>
+    </div>
+
+    <section class="diario-emocional">
+      <h2>📅 Diário Emocional</h2>
+      <p>Como você está se sentindo hoje?</p>
+      
+      <div class="emoji-escolha">
+        <button class="emoji" data-emoji="😊">😊</button>
+        <button class="emoji" data-emoji="😢">😢</button>
+        <button class="emoji" data-emoji="😴">😴</button>
+        <button class="emoji" data-emoji="😤">😤</button>
+        <button class="emoji" data-emoji="🧘">🧘</button>
+        <button class="emoji" data-emoji="😬">😬</button>
+        <button class="emoji" data-emoji="🤔">🤔</button>
+        <button class="emoji" data-emoji="😄">😄</button>
+      </div>
+    
+      <p id="feedback-dia"></p>
+    
+      <h3>Resumo da Semana:</h3>
+      <div id="resumo-semanal" class="semana-linha"></div>
+    </section>
+    
+    
+    
+  </main>
+
+  <footer>
+    <p>&copy; 2025 EmoConnect. Você não está sozinho.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
