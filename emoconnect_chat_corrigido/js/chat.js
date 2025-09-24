@@ -1,6 +1,72 @@
-// chat.js - Funcionalidades do chat EmoConnect
+// Função de teste para forçar criação de contatos
+function testarContatos() {
+  console.log("🧪 TESTE: Forçando criação de contatos...");
+  
+  const container = document.querySelector('.contacts-container');
+  if (!container) {
+    console.error("❌ Container não encontrado no teste!");
+    return;
+  }
+  
+  console.log("✅ Container encontrado, limpando...");
+  container.innerHTML = "";
+  
+  // Criar contatos diretamente sem loop
+  console.log("📝 Criando contatos manualmente...");
+  
+  const contato1 = document.createElement("div");
+  contato1.className = "contact-item";
+  contato1.innerHTML = `
+    <img src="https://i.pravatar.cc/40?img=1" alt="Ana">
+    <div class="contact-info">
+      <div class="contact-name">Ana Silva</div>
+      <div class="last-message">Olá, como você está?</div>
+    </div>
+    <div class="status-indicator online"></div>
+  `;
+  container.appendChild(contato1);
+  
+  const contato2 = document.createElement("div");
+  contato2.className = "contact-item";
+  contato2.innerHTML = `
+    <img src="https://i.pravatar.cc/40?img=11" alt="Carlos">
+    <div class="contact-info">
+      <div class="contact-name">Carlos Mendes</div>
+      <div class="last-message">Consegui resolver aquele problema.</div>
+    </div>
+    <div class="status-indicator offline"></div>
+  `;
+  container.appendChild(contato2);
+  
+  const contato3 = document.createElement("div");
+  contato3.className = "contact-item";
+  contato3.innerHTML = `
+    <img src="https://i.pravatar.cc/40?img=5" alt="Juliana">
+    <div class="contact-info">
+      <div class="contact-name">Juliana Costa</div>
+      <div class="last-message">Vamos conversar depois?</div>
+    </div>
+    <div class="status-indicator online"></div>
+  `;
+  container.appendChild(contato3);
+  
+  console.log("✅ 3 contatos criados manualmente");
+  console.log("👶 Filhos no container:", container.children.length);
+  
+  // Adicionar event listeners
+  container.querySelectorAll('.contact-item').forEach(item => {
+    item.addEventListener('click', () => {
+      // Remover active de todos
+      container.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
+      // Adicionar active ao clicado
+      item.classList.add('active');
+      console.log("👆 Contato clicado:", item.querySelector('.contact-name').textContent);
+    });
+  });
+}
 
-// Importações do Firebase - corrigindo para garantir compatibilidade
+// Expor função globalmente para teste
+window.testarContatos = testarContatos;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
@@ -20,7 +86,45 @@ const GEMINI_API_KEY = "AIzaSyCnuGlHwY4wf-C1UhgGiNrUgbjiSsnlyBg";
 
 // Inicialização da aplicação após o DOM estar completamente carregado
 document.addEventListener('DOMContentLoaded', () => {
-  inicializarChat();
+  console.log("=== DOM CARREGADO ===");
+  console.log("Iniciando inicializarChat...");
+  
+  // Verificar se todos os elementos existem antes de inicializar
+  const elementosNecessarios = {
+    'chat': document.getElementById("chat"),
+    'enviarBtn': document.getElementById("enviarBtn"),
+    'mensagemInput': document.getElementById("mensagemInput"),
+    'userChatBtn': document.getElementById("user-chat-btn"),
+    'aiChatBtn': document.getElementById("ai-chat-btn"),
+    'contactsList': document.getElementById("contacts-list"),
+    'contactsContainer': document.querySelector(".contacts-container"),
+    'activeContactAvatar': document.getElementById("active-contact-avatar"),
+    'activeContactName': document.getElementById("active-contact-name")
+  };
+  
+  console.log("=== VERIFICAÇÃO DE ELEMENTOS ===");
+  let elementosFaltando = [];
+  
+  for (const [nome, elemento] of Object.entries(elementosNecessarios)) {
+    if (!elemento) {
+      console.error(`❌ ELEMENTO FALTANDO: ${nome}`);
+      elementosFaltando.push(nome);
+    } else {
+      console.log(`✅ ELEMENTO OK: ${nome}`);
+    }
+  }
+  
+  if (elementosFaltando.length > 0) {
+    console.error("❌ ERRO: Elementos faltando:", elementosFaltando);
+    // Tentar inicializar mesmo assim, mas com tratamento especial
+  }
+  
+  try {
+    inicializarChat();
+  } catch (error) {
+    console.error("❌ ERRO na inicialização do chat:", error);
+  }
+  
   configurarTemaEscuro();
 });
 
@@ -37,6 +141,7 @@ function inicializarChat() {
   const mensagemInput = document.getElementById("mensagemInput");
   const userChatBtn = document.getElementById("user-chat-btn");
   const aiChatBtn = document.getElementById("ai-chat-btn");
+  const testeContatosBtn = document.getElementById("teste-contatos");
   
   // Elementos da lista de contatos
   const contactsList = document.getElementById("contacts-list");
@@ -44,6 +149,14 @@ function inicializarChat() {
   const searchContact = document.getElementById("search-contact");
   const activeContactAvatar = document.getElementById("active-contact-avatar");
   const activeContactName = document.getElementById("active-contact-name");
+  
+  // Event listener para o botão de teste
+  if (testeContatosBtn) {
+    testeContatosBtn.addEventListener('click', () => {
+      console.log("🔴 BOTÃO DE TESTE CLICADO");
+      testarContatos();
+    });
+  }
     // Variáveis de estado
   let chatMode = "user"; // Modo padrão: chat com usuários
   
@@ -180,63 +293,101 @@ function inicializarChat() {
     }
   }
 
-  // Função para obter resposta da IA
+  // Função para obter resposta da IA com melhorias
   async function obterRespostaGemini(mensagem) {
     try {
-      console.log("Usando API alternativa para resposta de IA");
+      console.log("Gerando resposta da IA para:", mensagem);
       
-      // Usando API pública para geração de texto baseado em humor
-      // Esta é uma simulação de resposta da IA
-      // Em um ambiente de produção, você usaria uma API real como OpenAI, Azure OpenAI, etc.
+      // Simula processamento da IA com delay realista
+      await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 1000));
       
-      // Simula um pequeno atraso para parecer com o processamento real
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Sistema de respostas inteligente baseado em contexto emocional
+      const contextosEmocionais = {
+        saudacao: {
+          keywords: ["oi", "olá", "tchau", "bom dia", "boa tarde", "boa noite"],
+          respostas: [
+            "Olá! É um prazer conversar com você. Como você está se sentindo hoje?",
+            "Oi! Estou aqui para apoiá-lo em sua jornada emocional. O que você gostaria de compartilhar?",
+            "Seja bem-vindo! Vamos conversar sobre suas emoções e sentimentos?"
+          ]
+        },
+        positivas: {
+          keywords: ["feliz", "alegre", "bom", "ótimo", "excelente", "contente", "alegria", "maravilhoso", "gosto", "amo", "amor", "gratidão"],
+          respostas: [
+            "Que alegria saber que você está se sentindo bem! ✨ Momentos como esses são preciosos. Que tal registrar esse sentimento para lembrar nos dias mais difíceis?",
+            "Fico muito feliz em ouvir isso! 😊 Compartilhar momentos positivos é uma forma maravilhosa de multiplicar a alegria. O que está te deixando tão bem assim?",
+            "Excelente! Celebrar as pequenas vitórias e momentos positivos é fundamental para o bem-estar emocional. Continue cultivando essa energia!"
+          ]
+        },
+        negativas: {
+          keywords: ["triste", "mal", "ruim", "terrível", "deprimido", "ansioso", "nervoso", "angústia", "difícil", "problema", "dor", "sozinho", "medo", "preocupado"],
+          respostas: [
+            "Sinto muito que você esteja passando por um momento difícil. 💙 É completamente normal ter dias assim. Lembre-se: você é mais forte do que imagina.",
+            "Entendo que você está enfrentando desafios agora. Seus sentimentos são válidos e importantes. Às vezes, expressar o que sentimos já é o primeiro passo para a cura.",
+            "É corajoso da sua parte compartilhar esses sentimentos. Você não está sozinho nessa jornada. Que tal tentarmos algumas técnicas de respiração ou reflexão?"
+          ]
+        },
+        autocuidado: {
+          keywords: ["cansado", "estressado", "sobrecarregado", "exausto", "trabalho", "estudos", "dormir", "descanso"],
+          respostas: [
+            "Parece que você precisa de um momento para si mesmo. 🌱 Que tal fazer uma pausa? Algumas respirações profundas ou uma caminhada podem ajudar muito.",
+            "O autocuidado é essencial! Você já experimentou técnicas de mindfulness ou meditação? Posso te sugerir alguns exercícios simples de relaxamento.",
+            "É importante reconhecer quando precisamos desacelerar. Seu bem-estar vem primeiro. Que tal programar um tempo só para você hoje?"
+          ]
+        },
+        motivacao: {
+          keywords: ["desistir", "difícil", "impossível", "não consigo", "fracasso", "sem esperança"],
+          respostas: [
+            "Lembre-se: cada dia é uma nova oportunidade para recomeçar. 🌅 Você já superou desafios antes e pode superar esse também. Acredito em você!",
+            "Os momentos difíceis são temporários, mas sua força é permanente. 💪 Que tal focarmos em pequenos passos que você pode dar hoje?",
+            "Entendo que parece impossível agora, mas você é mais resiliente do que imagina. Vamos pensar juntos em estratégias para tornar isso mais manejável?"
+          ]
+        },
+        relacionamentos: {
+          keywords: ["família", "amigos", "relacionamento", "namorado", "namorada", "briga", "discussão", "conversa"],
+          respostas: [
+            "Os relacionamentos são uma parte importante da nossa vida emocional. Como você se sente sobre essa situação? Às vezes, uma conversa aberta pode resolver muito.",
+            "É natural haver altos e baixos nos relacionamentos. O importante é a comunicação respeitosa. Você já pensou em expressar seus sentimentos de forma calma?",
+            "Relacionamentos exigem paciência e compreensão mútua. Como posso te ajudar a processar esses sentimentos sobre essa pessoa importante?"
+          ]
+        }
+      };
       
-      // Conjunto de respostas pré-definidas para diferentes tipos de emoções/mensagens
-      const respostasPositivas = [
-        "Estou feliz em saber que você está se sentindo bem! Lembre-se de aproveitar esses momentos positivos e talvez registrá-los em um diário para dias mais difíceis.",
-        "Que bom! Compartilhar sentimentos positivos é uma ótima maneira de processá-los e integrá-los na sua experiência.",
-        "Fico feliz em ouvir isso! Celebrar as pequenas vitórias é importante para nosso bem-estar emocional."
-      ];
-      
-      const respostasNegativas = [
-        "Entendo que você esteja passando por um momento difícil. Está tudo bem não estar bem às vezes. Tente ser gentil consigo mesmo neste momento.",
-        "Sinto muito que você esteja passando por isso. Às vezes, apenas expressar o que sentimos já é um primeiro passo para lidar com emoções difíceis.",
-        "Esses sentimentos são válidos e importantes. Você consideraria conversar com um amigo próximo ou um profissional sobre o que está sentindo?"
-      ];
-      
-      const respostasNeutras = [
-        "Obrigado por compartilhar seus pensamentos comigo. Como posso ajudar você a explorar melhor suas emoções hoje?",
-        "Estou aqui para apoiar você em sua jornada emocional. Há algo específico que você gostaria de discutir mais profundamente?",
-        "O autoconhecimento emocional é um processo contínuo. Estou aqui para ajudar você a refletir sobre seus sentimentos."
-      ];
-      
-      // Analisa a mensagem para determinar o tipo de resposta
+      // Análise da mensagem
       const mensagemLower = mensagem.toLowerCase();
-      let resposta;
+      let contextoEncontrado = null;
+      let resposta = null;
       
-      // Palavras-chave para detectar sentimentos
-      const palavrasPositivas = ["feliz", "alegre", "bom", "ótimo", "contente", "alegria", "maravilhoso", "gosto", "amo"];
-      const palavrasNegativas = ["triste", "mal", "ruim", "deprimido", "ansioso", "nervoso", "angústia", "difícil", "problema", "dor", "sozinho", "medo"];
-      
-      // Verifica se contém palavras positivas
-      if (palavrasPositivas.some(palavra => mensagemLower.includes(palavra))) {
-        resposta = respostasPositivas[Math.floor(Math.random() * respostasPositivas.length)];
-      } 
-      // Verifica se contém palavras negativas
-      else if (palavrasNegativas.some(palavra => mensagemLower.includes(palavra))) {
-        resposta = respostasNegativas[Math.floor(Math.random() * respostasNegativas.length)];
-      } 
-      // Resposta neutra para outros casos
-      else {
-        resposta = respostasNeutras[Math.floor(Math.random() * respostasNeutras.length)];
+      // Procura por contextos específicos
+      for (const [contexto, dados] of Object.entries(contextosEmocionais)) {
+        if (dados.keywords.some(keyword => mensagemLower.includes(keyword))) {
+          contextoEncontrado = contexto;
+          resposta = dados.respostas[Math.floor(Math.random() * dados.respostas.length)];
+          break;
+        }
       }
       
+      // Se não encontrou contexto específico, usa respostas gerais empáticas
+      if (!resposta) {
+        const respostasGerais = [
+          "Obrigado por compartilhar isso comigo. Suas emoções são válidas e importantes. Como posso ajudá-lo a processar melhor esses sentimentos?",
+          "Estou aqui para apoiá-lo em sua jornada emocional. Há algo específico sobre o que você gostaria de conversar mais profundamente?",
+          "É importante expressar nossos sentimentos. Como você se sente ao compartilhar isso? Existe algo mais que gostaria de explorar sobre essa situação?",
+          "Vejo que você está refletindo sobre algo importante. O autoconhecimento emocional é um processo valioso. Que insights você tem sobre isso?",
+          "Suas palavras mostram uma pessoa que está buscando compreender suas emoções. Isso é muito positivo! Como posso te ajudar nessa reflexão?"
+        ];
+        resposta = respostasGerais[Math.floor(Math.random() * respostasGerais.length)];
+      }
+      
+      console.log(`Contexto identificado: ${contextoEncontrado || 'geral'}`);
       console.log("Resposta gerada:", resposta);
+      
       return resposta;
+      
     } catch (error) {
-      console.error("Erro ao gerar resposta:", error);
-      throw new Error("Não foi possível gerar uma resposta. Por favor, tente novamente.");
+      console.error("Erro ao gerar resposta da IA:", error);
+      // Resposta de fallback mais amigável
+      return "Desculpe, tive uma pequena dificuldade para processar sua mensagem. Pode tentar reformular ou me contar de outra forma? Estou aqui para ajudar! 💙";
     }
   }  // Carrega mensagens do Firebase (apenas para modo usuário)
   function carregarMensagens() {
@@ -315,15 +466,72 @@ function inicializarChat() {
 
   // Função para mostrar a lista de contatos
   function exibirContatos(listaContatos = contatos) {
+    console.log("=== EXIBINDO CONTATOS ===");
+    console.log("Lista de contatos recebida:", listaContatos);
+    console.log("Quantidade de contatos:", listaContatos ? listaContatos.length : 0);
+    
+    // Tentar encontrar o container se ainda não foi encontrado
+    if (!contactsContainer) {
+      console.log("🔍 Tentando encontrar container de contatos...");
+      contactsContainer = document.querySelector(".contacts-container");
+      if (!contactsContainer) {
+        contactsContainer = document.querySelector(".contacts-list .contacts-container");
+      }
+      if (!contactsContainer) {
+        contactsContainer = document.getElementById("contacts-container");
+      }
+    }
+    
+    if (!contactsContainer) {
+      console.error("❌ Container de contatos não encontrado! Tentando criar um temporário...");
+      
+      // Criar um container temporário se não existir
+      const contactsList = document.getElementById("contacts-list");
+      if (contactsList) {
+        const tempContainer = document.createElement("div");
+        tempContainer.className = "contacts-container";
+        tempContainer.style.flex = "1";
+        tempContainer.style.overflowY = "auto";
+        tempContainer.style.padding = "10px";
+        contactsList.appendChild(tempContainer);
+        contactsContainer = tempContainer;
+        console.log("✅ Container temporário criado");
+      } else {
+        console.error("❌ Nem mesmo o elemento contacts-list foi encontrado!");
+        return;
+      }
+    }
+    
+    console.log("✅ Container encontrado:", contactsContainer);
+    
+    // Limpar conteúdo existente
     contactsContainer.innerHTML = "";
     
-    listaContatos.forEach(contato => {
+    if (!listaContatos || listaContatos.length === 0) {
+      console.log("⚠️ Nenhum contato para exibir");
+      const noContactsMsg = document.createElement("div");
+      noContactsMsg.className = "no-contacts";
+      noContactsMsg.innerHTML = `
+        <p style="text-align: center; color: #666; padding: 20px;">
+          <i class="fas fa-users" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+          Nenhum contato encontrado
+        </p>
+      `;
+      contactsContainer.appendChild(noContactsMsg);
+      return;
+    }
+    
+    console.log(`📝 Criando elementos para ${listaContatos.length} contatos...`);
+    
+    listaContatos.forEach((contato, index) => {
+      console.log(`Criando contato ${index + 1}:`, contato.nome);
+      
       const contactItem = document.createElement("div");
       contactItem.classList.add("contact-item");
       contactItem.dataset.id = contato.id;
       
       contactItem.innerHTML = `
-        <img src="${contato.avatar}" alt="${contato.nome}">
+        <img src="${contato.avatar}" alt="${contato.nome}" onerror="this.src='https://via.placeholder.com/40x40/6a5acd/white?text=${contato.nome.charAt(0)}'">
         <div class="contact-info">
           <div class="contact-name">${contato.nome}</div>
           <div class="last-message">${contato.ultimaMensagem}</div>
@@ -332,6 +540,8 @@ function inicializarChat() {
       `;
       
       contactItem.addEventListener("click", () => {
+        console.log("👆 Contato clicado:", contato);
+        
         // Remover classe ativa de todos os contatos
         document.querySelectorAll(".contact-item").forEach(item => {
           item.classList.remove("active");
@@ -341,19 +551,42 @@ function inicializarChat() {
         contactItem.classList.add("active");
         
         // Atualizar o cabeçalho do chat
-        activeContactAvatar.src = contato.avatar;
-        activeContactName.textContent = contato.nome;
+        if (activeContactAvatar) {
+          activeContactAvatar.src = contato.avatar;
+          activeContactAvatar.onerror = function() {
+            this.src = `https://via.placeholder.com/36x36/6a5acd/white?text=${contato.nome.charAt(0)}`;
+          };
+        }
+        if (activeContactName) {
+          activeContactName.textContent = contato.nome;
+        }
         
-        // Carregar as mensagens deste contato (em uma aplicação real)
-        chatDiv.innerHTML = ""; // Limpa o chat
+        // Carregar as mensagens deste contato (simulação)
+        chatDiv.innerHTML = "";
         const welcomeMsg = document.createElement("div");
         welcomeMsg.classList.add("message", "received");
-        welcomeMsg.innerHTML = `Iniciando conversa com ${contato.nome}.<div class="timestamp">${new Date().toLocaleTimeString()}</div>`;
+        welcomeMsg.innerHTML = `Iniciando conversa com ${contato.nome}. 💬<div class="timestamp">${new Date().toLocaleTimeString()}</div>`;
         chatDiv.appendChild(welcomeMsg);
+        
+        // Simular algumas mensagens antigas (opcional)
+        setTimeout(() => {
+          const oldMsg = document.createElement("div");
+          oldMsg.classList.add("message", "received");
+          oldMsg.innerHTML = `${contato.ultimaMensagem}<div class="timestamp">${new Date(Date.now() - 3600000).toLocaleTimeString()}</div>`;
+          chatDiv.appendChild(oldMsg);
+          chatDiv.scrollTop = chatDiv.scrollHeight;
+        }, 500);
       });
       
       contactsContainer.appendChild(contactItem);
+      console.log(`✅ Contato ${contato.nome} adicionado ao DOM`);
     });
+    
+    console.log(`✅ ${listaContatos.length} contatos exibidos com sucesso no container:`, contactsContainer);
+    
+    // Debug: verificar se os elementos foram realmente adicionados
+    const elementosNoContainer = contactsContainer.children.length;
+    console.log(`🔍 DEBUG: Container agora tem ${elementosNoContainer} elementos filhos`);
   }
 
   // Função de pesquisa de contatos
@@ -400,18 +633,117 @@ function inicializarChat() {
       mensagemInput.focus();
     });
   });  // ==== INICIALIZAÇÃO ====
-  chatMode = "user"; // Garantindo que o modo inicial seja "user"
+  
+  console.log("=== INICIANDO CONFIGURAÇÃO DO CHAT ===");
+  
+  // Verificações de elementos essenciais com tratamento mais flexível
+  if (!chatDiv) {
+    console.error("❌ Elemento chat não encontrado!");
+    return;
+  }
+  if (!enviarBtn) {
+    console.error("❌ Botão enviar não encontrado!");
+    return;
+  }
+  if (!mensagemInput) {
+    console.error("❌ Input de mensagem não encontrado!");
+    return;
+  }
+  if (!userChatBtn || !aiChatBtn) {
+    console.error("❌ Botões de modo de chat não encontrados!");
+    return;
+  }
+  
+  // Para contactsList e contactsContainer, vamos tentar encontrar de forma mais flexível
+  let contactsListElement = contactsList || document.getElementById("contacts-list");
+  let contactsContainerElement = contactsContainer || document.querySelector(".contacts-container");
+  
+  if (!contactsListElement) {
+    console.error("❌ Lista de contatos não encontrada! Tentando criar...");
+    // Não vamos retornar aqui, vamos tentar continuar
+  }
+  
+  if (!contactsContainerElement) {
+    console.error("❌ Container de contatos não encontrado! Tentando encontrar novamente...");
+    contactsContainerElement = document.querySelector(".contacts-list .contacts-container");
+    if (!contactsContainerElement) {
+      console.error("❌ Container de contatos ainda não encontrado!");
+    }
+  }
+  
+  // Atualizar as variáveis globais
+  if (contactsContainerElement) {
+    contactsContainer = contactsContainerElement;
+    console.log("✅ Container de contatos encontrado e atualizado");
+  }
+  
+  // Garantindo que o modo inicial seja "user"
+  console.log("⚙️ Configurando modo inicial...");
+  chatMode = "user";
   userChatBtn.classList.add("active");
   aiChatBtn.classList.remove("active");
   
   // Configurar o cabeçalho inicial do chat
-  activeContactAvatar.style.display = ""; // Garante que o avatar esteja visível no modo usuário
-  activeContactAvatar.src = "https://via.placeholder.com/30";
-  activeContactName.textContent = "Chat EmoConnect";
+  if (activeContactAvatar) {
+    console.log("⚙️ Configurando avatar inicial...");
+    activeContactAvatar.style.display = ""; 
+    activeContactAvatar.src = "https://via.placeholder.com/36x36/6a5acd/white?text=EC";
+    activeContactAvatar.onerror = function() {
+      this.src = "https://via.placeholder.com/36x36/6a5acd/white?text=EC";
+    };
+  }
+  if (activeContactName) {
+    activeContactName.textContent = "Chat EmoConnect";
+  }
   
-  carregarMensagens();
-  exibirContatos();
-  atualizarVisibilidadeLista();
+  console.log("⚙️ Carregando mensagens do Firebase...");
+  try {
+    carregarMensagens();
+  } catch (error) {
+    console.error("❌ Erro ao carregar mensagens:", error);
+  }
+  
+  console.log("⚙️ Tentando exibir lista de contatos...");
+  try {
+    // Forçar a exibição de contatos mesmo que haja problemas
+    exibirContatos();
+  } catch (error) {
+    console.error("❌ Erro ao exibir contatos:", error);
+    // Vamos tentar uma abordagem alternativa
+    setTimeout(() => {
+      console.log("🔄 Tentativa alternativa de exibir contatos...");
+      try {
+        testarContatos(); // Usar a função de teste como fallback
+      } catch (retryError) {
+        console.error("❌ Erro na segunda tentativa:", retryError);
+      }
+    }, 1000);
+  }
+  
+  console.log("⚙️ Atualizando visibilidade da lista...");
+  try {
+    atualizarVisibilidadeLista();
+  } catch (error) {
+    console.error("❌ Erro ao atualizar visibilidade:", error);
+  }
+  
+  console.log("✅ Chat inicializado!");
+  
+  // Mensagem de boas-vindas no chat
+  try {
+    const welcomeDiv = document.createElement("div");
+    welcomeDiv.classList.add("message", "received");
+    welcomeDiv.innerHTML = `Bem-vindo ao EmoConnect! 🌟 <br>Selecione um contato para começar a conversar ou mude para o modo IA para falar comigo.<div class="timestamp">${new Date().toLocaleTimeString()}</div>`;
+    chatDiv.appendChild(welcomeDiv);
+  } catch (error) {
+    console.error("❌ Erro ao criar mensagem de boas-vindas:", error);
+  }
+  
+  // DEBUG: Forçar exibição de informações sobre contatos
+  console.log("=== DEBUG: Informações dos contatos ===");
+  console.log("Array de contatos:", contatos);
+  console.log("Quantidade de contatos:", contatos.length);
+  console.log("Container de contatos:", contactsContainer);
 }
 
 // Função para controle do tema escuro/claro

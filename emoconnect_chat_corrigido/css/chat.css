@@ -83,6 +83,19 @@ body {
     border: 1px solid #ffcdd2;
   }
   
+  .message.typing {
+    background-color: #f0f2f5;
+    color: #666;
+    font-style: italic;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+  
   .timestamp {
     font-size: 10px;
     color: gray;
@@ -94,6 +107,15 @@ body {
     display: flex;
     gap: 10px;
     margin-top: 15px;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
   }
   
   .chat-input input:focus,
@@ -422,4 +444,41 @@ body.dark-mode .chat-mode-selector button {
 body.dark-mode .chat-mode-selector button.active {
   background-color: #6a5acd;
   color: white;
+}
+
+/* Estilos adicionais para melhor compatibilidade */
+.no-contacts {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.no-contacts i {
+  font-size: 24px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Fix para imagens que não carregam */
+img[alt] {
+  background-color: #f0f0f0;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
+}
+
+/* Garantir que o container principal esteja visível */
+.main-container {
+  min-height: 400px;
+  padding: 0 20px;
+}
+
+/* Debugging: forçar visibilidade dos contatos */
+.contacts-list.debug {
+  border: 2px solid red !important;
+}
+
+.contacts-container.debug {
+  border: 2px solid blue !important;
+  min-height: 200px !important;
 }
