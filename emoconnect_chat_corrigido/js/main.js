@@ -98,33 +98,81 @@ document.addEventListener("DOMContentLoaded", () => {
           mood: selectedMood || "Neutro"
         });
         localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
-        
+
         alert("📝 Seu desabafo foi registrado. Estamos com você.");
       }
     });
   }
 
-  // Respirar - Exercício de respiração
+  // Respirar - Exercício de respiração interativo
   const respirarBtn = document.getElementById("respirar");
   if (respirarBtn) {
     respirarBtn.addEventListener("click", () => {
-      alert("🌬️ Inspire profundamente por 4 segundos, segure por 4 e expire por 6. Repita 3 vezes.");
+      // Exercício de respiração guiado
+      if (confirm("🌬️ Quer fazer um exercício de respiração guiado? Clique OK para começar.")) {
+        alert("🧘‍♀️ Vamos começar!\n\n1. Sente-se confortavelmente\n2. Feche os olhos\n3. Siga as instruções...");
+        
+        setTimeout(() => {
+          alert("🌬️ INSPIRE lentamente por 4 segundos...\n\n(1... 2... 3... 4...)");
+        }, 1000);
+        
+        setTimeout(() => {
+          alert("💨 SEGURE a respiração por 4 segundos...\n\n(1... 2... 3... 4...)");
+        }, 6000);
+        
+        setTimeout(() => {
+          alert("🌊 EXPIRE lentamente por 6 segundos...\n\n(1... 2... 3... 4... 5... 6...)");
+        }, 11000);
+        
+        setTimeout(() => {
+          alert("✨ Muito bem! Repita mais 2 vezes se quiser.\n\nComo se sente agora? 😌");
+        }, 18000);
+      }
     });
   }
 
-  // Música relaxante
+  // Música relaxante - Sugestões baseadas no humor
   const musicBtn = document.getElementById("musica");
   if (musicBtn) {
     musicBtn.addEventListener("click", () => {
-      const musicSuggestions = [
-        "🎵 Ludovico Einaudi - Nuvole Bianche",
-        "🎵 Max Richter - On The Nature of Daylight", 
-        "🎵 Ólafur Arnalds - Near Light",
-        "🎵 Kiasmos - Blurred EP",
-        "🎵 Emancipator - Dusk to Dawn"
-      ];
-      const randomMusic = musicSuggestions[Math.floor(Math.random() * musicSuggestions.length)];
-      alert(`🎧 Sugestão: ${randomMusic}`);
+      const musicPorHumor = {
+        "Triste": [
+          "🎵 Max Richter - On The Nature of Daylight",
+          "🎵 Ólafur Arnalds - Near Light",
+          "🎵 Nils Frahm - Says"
+        ],
+        "Ansioso": [
+          "🎵 Brian Eno - Ambient 1: Music for Airports",
+          "🎵 Stars of the Lid - And Their Refinement",
+          "🎵 Tim Hecker - Ravedeath"
+        ],
+        "Feliz": [
+          "🎵 Bonobo - Kong",
+          "🎵 Emancipator - Dusk to Dawn",
+          "🎵 Tycho - Dive"
+        ],
+        "Calmo": [
+          "🎵 Ludovico Einaudi - Nuvole Bianche",
+          "🎵 Max Richter - Sleep",
+          "🎵 Kiasmos - Blurred EP"
+        ],
+        "Geral": [
+          "🎵 Ludovico Einaudi - Nuvole Bianche",
+          "🎵 Max Richter - On The Nature of Daylight", 
+          "🎵 Ólafur Arnalds - Near Light",
+          "🎵 Kiasmos - Blurred EP",
+          "🎵 Emancipator - Dusk to Dawn"
+        ]
+      };
+      
+      const musicasParaHumor = musicPorHumor[selectedMood] || musicPorHumor["Geral"];
+      const randomMusic = musicasParaHumor[Math.floor(Math.random() * musicasParaHumor.length)];
+      
+      const mensagem = selectedMood 
+        ? `🎧 Baseado no seu humor "${selectedMood}", recomendo:\n\n${randomMusic}\n\nQue tal ouvir agora? 🎶`
+        : `🎧 Sugestão musical para relaxar:\n\n${randomMusic}\n\nPerfeita para este momento! 🎶`;
+        
+      alert(mensagem);
     });
   }
 
@@ -166,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Checkboxes das atividades
   const activityCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="atividade"]');
   activityCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
+    checkbox.addEventListener('change', function () {
       if (this.checked) {
         console.log(`Atividade ${this.id} marcada como concluída!`);
       }
@@ -193,12 +241,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function salvarHumorDiario(humor) {
     const hoje = new Date().toDateString();
     const humorData = JSON.parse(localStorage.getItem("humorDiario") || "{}");
-    
+
     humorData[hoje] = {
       humor: humor,
       timestamp: new Date().toISOString()
     };
-    
+
     localStorage.setItem("humorDiario", JSON.stringify(humorData));
   }
 
@@ -209,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const humorData = JSON.parse(localStorage.getItem("humorDiario") || "{}");
     const entries = Object.values(humorData);
-    
+
     if (entries.length === 0) {
       analiseElement.textContent = "Registre seus humores para ver análises personalizadas.";
       return;
@@ -217,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Análise simples dos últimos 7 dias
     const ultimosSete = entries.slice(-7);
-    const humoresPositivos = ultimosSete.filter(entry => 
+    const humoresPositivos = ultimosSete.filter(entry =>
       ["Feliz", "Calmo", "Empolgado"].includes(entry.humor)
     ).length;
 
@@ -254,9 +302,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // === SEÇÃO MURAL DE APOIO ===
-  const mensagem = document.getElementById("mural-mensagem");
-  const categoriaSelect = document.getElementById("categoria-select");
-  const postar = document.getElementById("postar-btn");
+  const mensagem = document.getElementById("mensagem");
+  const categoriaSelect = document.getElementById("categoria-post");
+  const postar = document.getElementById("postar");
   const filterBtns = document.querySelectorAll(".filter-btn");
 
   // Postar no mural
@@ -265,21 +313,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const texto = mensagem.value.trim();
       if (texto.length > 0) {
         const posts = JSON.parse(localStorage.getItem("apoioPosts") || "[]");
-        
+
         // Obter categoria selecionada
         const categoria = categoriaSelect ? categoriaSelect.value : "geral";
-        
+
         // Criar novo post
         const novoPost = {
           texto: texto,
           categoria: categoria,
           data: new Date().toISOString()
         };
-        
+
         posts.unshift(novoPost); // adiciona no início
         localStorage.setItem("apoioPosts", JSON.stringify(posts));
         mensagem.value = "";
-        
+
         // Obter filtro atual
         const filtroAtual = document.querySelector(".filter-btn.active")?.getAttribute("data-filter") || "todos";
         renderizarMural(filtroAtual);
@@ -291,11 +339,11 @@ document.addEventListener("DOMContentLoaded", () => {
   filterBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       const filter = btn.getAttribute("data-filter");
-      
+
       // Atualizar botões
       filterBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      
+
       // Renderizar posts filtrados
       renderizarMural(filter);
     });
@@ -306,15 +354,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!mural) return;
 
     const posts = JSON.parse(localStorage.getItem("apoioPosts") || "[]");
-    const postsExibir = filtro === "todos" 
-      ? posts 
+    const postsExibir = filtro === "todos"
+      ? posts
       : posts.filter(post => post.categoria === filtro);
 
     if (postsExibir.length === 0) {
       const mensagemVazia = document.createElement("p");
       mensagemVazia.className = "mural-vazio";
-      mensagemVazia.textContent = filtro === "todos" 
-        ? "Ainda não há posts. Seja o primeiro a compartilhar!" 
+      mensagemVazia.textContent = filtro === "todos"
+        ? "Ainda não há posts. Seja o primeiro a compartilhar!"
         : "Ainda não há posts nesta categoria.";
       mural.innerHTML = "";
       mural.appendChild(mensagemVazia);
@@ -325,31 +373,31 @@ document.addEventListener("DOMContentLoaded", () => {
     postsExibir.forEach(post => {
       const postEl = document.createElement("div");
       postEl.className = "mural-post";
-      
+
       const dataFormatada = new Date(post.data).toLocaleDateString('pt-BR');
-      
+
       const categoriaEl = document.createElement("span");
       categoriaEl.className = "post-categoria";
       categoriaEl.textContent = post.categoria;
-      
+
       const textoEl = document.createElement("p");
       textoEl.textContent = post.texto;
-      
+
       const dataEl = document.createElement("div");
       dataEl.className = "post-data";
       dataEl.textContent = dataFormatada;
-      
+
       postEl.appendChild(categoriaEl);
       postEl.appendChild(textoEl);
       postEl.appendChild(dataEl);
-      
+
       mural.appendChild(postEl);
     });
   }
 
   // Conectar com comunidade
   const connectBtns = document.querySelectorAll(".connect-btn");
-  
+
   connectBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       const nomeUsuario = btn.parentElement.querySelector("h3").textContent;
@@ -368,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark-mode");
     if (toggleTheme) toggleTheme.textContent = "☀️";
   }
-  
+
   // Alternar tema
   if (toggleTheme) {
     toggleTheme.addEventListener("click", () => {
@@ -403,18 +451,18 @@ document.addEventListener("DOMContentLoaded", () => {
           interesses: "Interesses: Música, Relaxamento"
         }
       ];
-      
+
       maisPessoas.forEach(pessoa => {
         const card = document.createElement("div");
         card.className = "comunidade-card";
-        
+
         card.innerHTML = `
           <img src="${pessoa.img}" alt="Perfil" class="comunidade-img">
           <h3>${pessoa.nome}</h3>
           <p>${pessoa.interesses}</p>
           <button class="connect-btn">Conectar</button>
         `;
-        
+
         // Adicionar evento aos novos botões
         const btn = card.querySelector(".connect-btn");
         btn.addEventListener("click", () => {
@@ -423,10 +471,10 @@ document.addEventListener("DOMContentLoaded", () => {
           btn.disabled = true;
           btn.style.background = "#aaa";
         });
-        
+
         comunidadeCards.appendChild(card);
       });
-      
+
       // Remover botão após carregar
       carregarMaisBtn.style.display = "none";
     });
