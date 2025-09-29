@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perfil - EmoConnect</title>
   <link rel="stylesheet" href="../css/perfil.css" />
-  <script src="../js/perfil.js"></script>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script type="module" src="../js/perfil.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>  <header>
+
+<body>
+  <header>
     <div class="container">
       <h1>🌟 EmoConnect</h1>
       <p id="datetime"></p>
@@ -29,7 +32,7 @@
         <p id="daily-message">"Hoje é um bom dia para cuidar de você."</p>
       </div>
 
-      <img src="user-placeholder.png" alt="Foto de perfil" class="profile-pic" id="profile-img"/>
+      <img src="user-placeholder.png" alt="Foto de perfil" class="profile-pic" id="profile-img" />
 
       <h2 id="profile-name">Fulano de Tal</h2>
       <p class="bio" id="profile-bio">"Aqui para compartilhar emoções e experiências."</p>
@@ -105,7 +108,7 @@
               <button id="save-mood">Salvar registro</button>
             </div>
           </div>
-          
+
           <div class="mood-history">
             <h4>Histórico de Humor</h4>
             <div class="mood-calendar" id="mood-calendar">
@@ -120,7 +123,7 @@
           </div>
         </div>
       </div>
-      
+
       <div id="tab-galeria" class="tab-content">
         <h3>Galeria de Fotos</h3>
         <div class="photo-upload">
@@ -136,13 +139,13 @@
         <h3>Preferências</h3>
         <div class="config-item">
           <label>
-            <input type="checkbox" id="notificacoes-check"> 
+            <input type="checkbox" id="notificacoes-check">
             Receber notificações
           </label>
         </div>
         <div class="config-item">
           <label>
-            <input type="checkbox" id="mensagens-privadas-check" checked> 
+            <input type="checkbox" id="mensagens-privadas-check" checked>
             Permitir mensagens privadas
           </label>
         </div>
@@ -162,21 +165,21 @@
             <option value="privado">Privado</option>
           </select>
         </div>
-        
+
         <h3>Conectar emoções</h3>
         <div class="config-item">
           <label>
-            <input type="checkbox" id="mostrar-humor-check" checked> 
+            <input type="checkbox" id="mostrar-humor-check" checked>
             Mostrar meu humor diário no perfil
           </label>
         </div>
         <div class="config-item">
           <label>
-            <input type="checkbox" id="lembretes-check"> 
+            <input type="checkbox" id="lembretes-check">
             Lembretes para registro de humor
           </label>
         </div>
-        
+
         <button id="save-config-btn" class="save-btn">Salvar preferências</button>
       </div>
     </section>
@@ -199,6 +202,7 @@
     <p>&copy; 2025 EmoConnect</p>
   </footer>
 
-  <script src="perfil.js"></script>
+  <!-- Script duplicado removido -->
 </body>
+
 </html>

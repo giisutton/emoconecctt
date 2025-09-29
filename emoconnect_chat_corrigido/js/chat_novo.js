@@ -1,11 +1,13 @@
 // ===== CHAT EMOCONNECT - VERSÃO COM IA REAL =====
 // Versão funcional com Google Gemini API para TCC
 
-console.log("🚀 Iniciando EmoConnect Chat com IA Real...");
+import { logger, analytics, config } from './config.js';
+import errorHandler from './error-handler.js';
+
+logger.info("🚀 Iniciando EmoConnect Chat com IA Real...");
 
 // ===== CONFIGURAÇÃO DA IA =====
-const GEMINI_API_KEY = "AIzaSyCnuGlHwY4wf-C1UhgGiNrUgbjiSsnlyBg";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_URL = config.getApiUrl('/chat/gemini');
 
 // Contexto da conversa para manter histórico
 let conversaContexto = [];
@@ -25,7 +27,7 @@ const listaContatos = [
   },
   {
     id: 2,
-    nome: "Carlos Mendes", 
+    nome: "Carlos Mendes",
     avatar: "https://i.pravatar.cc/40?img=11",
     ultimaMensagem: "Consegui resolver aquele problema.",
     status: "offline"
@@ -33,7 +35,7 @@ const listaContatos = [
   {
     id: 3,
     nome: "Juliana Costa",
-    avatar: "https://i.pravatar.cc/40?img=5", 
+    avatar: "https://i.pravatar.cc/40?img=5",
     ultimaMensagem: "Vamos conversar depois?",
     status: "online"
   },
@@ -54,9 +56,14 @@ const listaContatos = [
 ];
 
 // ===== AGUARDAR DOM =====
-document.addEventListener('DOMContentLoaded', function() {
-  console.log("✅ DOM carregado, inicializando chat...");
-  inicializarChat();
+document.addEventListener('DOMContentLoaded', function () {
+  logger.info("✅ DOM carregado, inicializando chat...");
+
+  errorHandler.withErrorHandling(
+    () => inicializarChat(),
+    'initialization',
+    { component: 'chat' }
+  );
 });
 
 // ===== FUNÇÃO PRINCIPAL =====
@@ -65,20 +72,22 @@ function inicializarChat() {
     // Buscar elementos
     const elementos = buscarElementos();
     if (!elementos) return;
-    
+
     // Configurar eventos
     configurarEventos(elementos);
-    
+
     // Mostrar contatos
     criarContatos(elementos);
-    
+
     // Configurar modo inicial
     configurarModoInicial(elementos);
-    
-    console.log("✅ Chat inicializado com sucesso!");
-    
+
+    logger.info("✅ Chat inicializado com sucesso!");
+    analytics.track('chat_initialized');
+
   } catch (error) {
-    console.error("❌ Erro na inicialização:", error);
+    logger.error("❌ Erro na inicialização:", error);
+    errorHandler.handleError(error, 'initialization');
   }
 }
 
@@ -96,7 +105,7 @@ function buscarElementos() {
     nomeAtivo: document.getElementById('active-contact-name'),
     inputPesquisa: document.getElementById('search-contact')
   };
-  
+
   // Verificar elementos essenciais
   const essenciais = ['chatBox', 'inputMensagem', 'btnEnviar', 'btnUser', 'btnAI'];
   for (let nome of essenciais) {
@@ -105,7 +114,7 @@ function buscarElementos() {
       return null;
     }
   }
-  
+
   // Criar container se não existir
   if (!elementos.containerContatos && elementos.listaContatos) {
     const container = document.createElement('div');
@@ -115,7 +124,7 @@ function buscarElementos() {
     elementos.containerContatos = container;
     console.log("✅ Container de contatos criado");
   }
-  
+
   console.log("✅ Elementos encontrados");
   return elementos;
 }
@@ -124,23 +133,23 @@ function buscarElementos() {
 function configurarEventos(elementos) {
   // Botão enviar
   elementos.btnEnviar.addEventListener('click', () => enviarMensagem(elementos));
-  
+
   // Enter no input
   elementos.inputMensagem.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') enviarMensagem(elementos);
   });
-  
+
   // Botões de modo
   elementos.btnUser.addEventListener('click', () => mudarModo('user', elementos));
   elementos.btnAI.addEventListener('click', () => mudarModo('ai', elementos));
-  
+
   // Pesquisa de contatos
   if (elementos.inputPesquisa) {
     elementos.inputPesquisa.addEventListener('input', (e) => {
       pesquisarContatos(e.target.value, elementos);
     });
   }
-  
+
   // Emojis
   document.querySelectorAll('.emoji-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -148,7 +157,7 @@ function configurarEventos(elementos) {
       elementos.inputMensagem.focus();
     });
   });
-  
+
   console.log("✅ Eventos configurados");
 }
 
@@ -158,15 +167,15 @@ function criarContatos(elementos) {
     console.error("❌ Container de contatos não disponível");
     return;
   }
-  
+
   console.log("📝 Criando contatos...");
   elementos.containerContatos.innerHTML = '';
-  
+
   listaContatos.forEach(contato => {
     const div = document.createElement('div');
     div.className = 'contact-item';
     div.dataset.id = contato.id;
-    
+
     div.innerHTML = `
       <img src="${contato.avatar}" alt="${contato.nome}" 
            onerror="this.src='https://via.placeholder.com/40x40/6a5acd/white?text=${contato.nome[0]}'">
@@ -176,31 +185,31 @@ function criarContatos(elementos) {
       </div>
       <div class="status-indicator ${contato.status}"></div>
     `;
-    
+
     // Click no contato
     div.addEventListener('click', () => selecionarContato(contato, elementos));
-    
+
     elementos.containerContatos.appendChild(div);
   });
-  
+
   console.log(`✅ ${listaContatos.length} contatos criados`);
 }
 
 // ===== SELECIONAR CONTATO =====
 function selecionarContato(contato, elementos) {
   console.log("👆 Contato selecionado:", contato.nome);
-  
+
   // Remover active de todos
   document.querySelectorAll('.contact-item').forEach(item => {
     item.classList.remove('active');
   });
-  
+
   // Adicionar active ao selecionado
   const itemSelecionado = document.querySelector(`[data-id="${contato.id}"]`);
   if (itemSelecionado) {
     itemSelecionado.classList.add('active');
   }
-  
+
   // Atualizar header
   if (elementos.avatarAtivo) {
     elementos.avatarAtivo.src = contato.avatar;
@@ -211,43 +220,43 @@ function selecionarContato(contato, elementos) {
   if (elementos.nomeAtivo) {
     elementos.nomeAtivo.textContent = contato.nome;
   }
-  
+
   // Limpar chat e mostrar mensagem inicial
   elementos.chatBox.innerHTML = '';
   adicionarMensagem(`Conversa com ${contato.nome} iniciada! 💬`, 'received', elementos);
-  
+
   contatoAtivo = contato;
 }
 
 // ===== MUDAR MODO (USER/AI) =====
 function mudarModo(novoModo, elementos) {
   console.log(`🔄 Mudando para modo: ${novoModo}`);
-  
+
   modoChat = novoModo;
-  
+
   // Atualizar botões
   elementos.btnUser.classList.toggle('active', novoModo === 'user');
   elementos.btnAI.classList.toggle('active', novoModo === 'ai');
-  
+
   // Mostrar/esconder lista de contatos
   if (elementos.listaContatos) {
     elementos.listaContatos.style.display = novoModo === 'user' ? 'flex' : 'none';
   }
-  
+
   // Atualizar header
   if (novoModo === 'ai') {
     if (elementos.avatarAtivo) elementos.avatarAtivo.style.display = 'none';
     if (elementos.nomeAtivo) elementos.nomeAtivo.textContent = 'Assistente EmoConnect';
-    
+
     // Limpar chat e mensagem de boas-vindas da IA
     elementos.chatBox.innerHTML = '';
     adicionarMensagem('Olá! Sou sua assistente virtual do EmoConnect. 🤖✨ Estou aqui para conversar sobre suas emoções, oferecer apoio e ajudar no que precisar. Como você está se sentindo hoje?', 'received', elementos);
-    
+
   } else {
     if (elementos.avatarAtivo) elementos.avatarAtivo.style.display = '';
     if (elementos.nomeAtivo) elementos.nomeAtivo.textContent = contatoAtivo ? contatoAtivo.nome : 'Chat EmoConnect';
   }
-  
+
   // Limpar chat se mudou de modo
   if (novoModo === 'user' && elementos.chatBox.children.length > 0) {
     elementos.chatBox.innerHTML = '';
@@ -259,20 +268,20 @@ function mudarModo(novoModo, elementos) {
 function enviarMensagem(elementos) {
   const texto = elementos.inputMensagem.value.trim();
   if (!texto) return;
-  
+
   console.log(`📤 Enviando: "${texto}" (modo: ${modoChat})`);
-  
+
   // Adicionar mensagem do usuário
   adicionarMensagem(texto, 'sent', elementos);
   elementos.inputMensagem.value = '';
-  
+
   if (modoChat === 'ai') {
     // Mostrar "digitando..."
     const typingMsg = adicionarMensagem('🤖 Digitando...', 'received typing', elementos);
-    
+
     // Chamar IA real
     chamarGeminiAPI(texto, elementos, typingMsg);
-    
+
   } else if (modoChat === 'user' && contatoAtivo) {
     // Simular resposta do contato
     setTimeout(() => {
@@ -293,27 +302,27 @@ function enviarMensagem(elementos) {
 async function chamarGeminiAPI(mensagem, elementos, typingMsg) {
   try {
     console.log("🤖 Tentando Google Gemini API...");
-    
+
     // Tentar API do Gemini primeiro
     const resposta = await tentarGeminiAPI(mensagem);
-    
+
     // Remover "digitando..."
     if (typingMsg && typingMsg.parentNode) {
       typingMsg.parentNode.removeChild(typingMsg);
     }
-    
+
     // Mostrar resposta
     adicionarMensagem(resposta, 'received', elementos);
     console.log("✅ Resposta obtida com sucesso");
-    
+
   } catch (error) {
     console.log("⚠️ API falhou, usando IA local inteligente...", error.message);
-    
+
     // Remover "digitando..." se ainda estiver lá
     if (typingMsg && typingMsg.parentNode) {
       typingMsg.parentNode.removeChild(typingMsg);
     }
-    
+
     // Usar IA local como fallback
     const respostaLocal = obterRespostaIALocal(mensagem);
     adicionarMensagem(respostaLocal, 'received', elementos);
@@ -333,7 +342,7 @@ async function tentarGeminiAPI(mensagem) {
       maxOutputTokens: 512,
     }
   };
-  
+
   const response = await fetch(GEMINI_API_URL, {
     method: 'POST',
     headers: {
@@ -341,13 +350,13 @@ async function tentarGeminiAPI(mensagem) {
     },
     body: JSON.stringify(requestBody)
   });
-  
+
   if (!response.ok) {
     throw new Error(`API Error: ${response.status}`);
   }
-  
+
   const data = await response.json();
-  
+
   if (data.candidates && data.candidates[0] && data.candidates[0].content) {
     return data.candidates[0].content.parts[0].text;
   } else {
@@ -358,9 +367,9 @@ async function tentarGeminiAPI(mensagem) {
 // ===== IA LOCAL INTELIGENTE (FALLBACK) =====
 function obterRespostaIALocal(mensagem) {
   console.log("🧠 Usando IA local inteligente...");
-  
+
   const msgLower = mensagem.toLowerCase();
-  
+
   // Análise emocional avançada
   const contextosEmocionais = {
     // Sentimentos negativos - MELHORADOS
@@ -372,7 +381,7 @@ function obterRespostaIALocal(mensagem) {
         "Obrigada por confiar em mim esse sentimento. 🌸 Quando dizemos 'não estou bem', geralmente há várias camadas por trás disso. Pode ser algo físico, emocional, ou uma mistura. Que tal começarmos identificando: você diria que é mais uma sensação física ou emocional?"
       ]
     },
-    
+
     tristeza: {
       keywords: ["triste", "tristeza", "deprimido", "sozinho", "vazio", "chateado", "melancolia", "down"],
       respostas: [
@@ -390,7 +399,7 @@ function obterRespostaIALocal(mensagem) {
         "A ansiedade é como um alarme interno que às vezes dispara quando não há perigo real. � Vamos tentar identificar: existem pensamentos específicos circulando na sua mente agora? E fisicamente, onde você sente mais tensão - no peito, estômago, ombros?"
       ]
     },
-    
+
     felicidade: {
       keywords: ["feliz", "alegre", "bem", "ótimo", "excelente", "maravilhoso", "animado", "contente", "radiante"],
       respostas: [
@@ -399,7 +408,7 @@ function obterRespostaIALocal(mensagem) {
         "Sua felicidade ilumina nossa conversa! 😊 É inspirador ver alguém em um momento positivo. Que tal guardarmos esse sentimento? Anote mentalmente ou fisicamente o que está sentindo agora - será um tesouro para os dias mais desafiadores."
       ]
     },
-    
+
     tcc_estudo: {
       keywords: ["tcc", "monografia", "dissertação", "estudo", "estudar", "apresentação", "defesa", "faculdade", "universidade", "prova", "trabalho acadêmico", "formatura"],
       respostas: [
@@ -408,7 +417,7 @@ function obterRespostaIALocal(mensagem) {
         "Reconheço a pressão acadêmica que você está enfrentando. 📖 O TCC representa não apenas uma nota, mas toda sua jornada de aprendizado. Lembra: não precisa ser perfeito, precisa ser SEU. Como posso te ajudar a organizar os próximos passos de forma mais leve e manejável?"
       ]
     },
-    
+
     motivacao: {
       keywords: ["desistir", "não consigo", "nao consigo", "difícil", "impossível", "sem forças", "cansado", "fracasso", "desânimo", "sem esperança"],
       respostas: [
@@ -417,7 +426,7 @@ function obterRespostaIALocal(mensagem) {
         "Primeiro, respire fundo. 🌬️ Segundo, saiba que sentir vontade de desistir não é fracasso - é um sinal de que você precisa de cuidado e, talvez, uma nova estratégia. Que tal começarmos identificando UMA coisa pequena e concreta que você pode fazer hoje? Pequenos passos também são progresso."
       ]
     },
-    
+
     sono_cansaco: {
       keywords: ["cansado", "cansada", "sono", "dormir", "insônia", "acordar", "noite", "descanso", "exausto", "exausta"],
       respostas: [
@@ -426,7 +435,7 @@ function obterRespostaIALocal(mensagem) {
         "O cansaço é um sinal importante que não devemos ignorar. ⚡ Pode ser físico, mas também pode ser nosso jeito de processar estresse ou sobrecarga emocional. Quando foi a última vez que você teve um momento só seu, sem pressões ou obrigações? Autocuidado não é luxo, é necessidade."
       ]
     },
-    
+
     relacionamentos: {
       keywords: ["família", "amigos", "relacionamento", "namorado", "namorada", "pais", "conflito", "briga", "discussão", "sozinho", "sozinha", "incompreendido"],
       respostas: [
@@ -436,11 +445,11 @@ function obterRespostaIALocal(mensagem) {
       ]
     }
   };
-  
+
   // Encontrar o contexto mais apropriado
   let melhorContexto = null;
   let maiorPontuacao = 0;
-  
+
   for (const [nome, contexto] of Object.entries(contextosEmocionais)) {
     const pontos = contexto.keywords.filter(keyword => msgLower.includes(keyword)).length;
     if (pontos > maiorPontuacao) {
@@ -448,12 +457,12 @@ function obterRespostaIALocal(mensagem) {
       melhorContexto = contexto;
     }
   }
-  
+
   // Se encontrou um contexto específico
   if (melhorContexto && maiorPontuacao > 0) {
     return melhorContexto.respostas[Math.floor(Math.random() * melhorContexto.respostas.length)];
   }
-  
+
   // Saudações
   if (msgLower.includes('oi') || msgLower.includes('olá') || msgLower.includes('ola')) {
     const saudacoes = [
@@ -463,7 +472,7 @@ function obterRespostaIALocal(mensagem) {
     ];
     return saudacoes[Math.floor(Math.random() * saudacoes.length)];
   }
-  
+
   // Despedidas
   if (msgLower.includes('tchau') || msgLower.includes('obrigado') || msgLower.includes('obrigada')) {
     const despedidas = [
@@ -473,7 +482,7 @@ function obterRespostaIALocal(mensagem) {
     ];
     return despedidas[Math.floor(Math.random() * despedidas.length)];
   }
-  
+
   // Respostas gerais empáticas - MELHORADAS
   const respostasGerais = [
     "Percebo que há algo importante nas suas palavras. 💙 Cada sentimento que você compartilha é válido e merece atenção. Como você está se sentindo ao falar sobre isso aqui comigo? Às vezes, colocar os pensamentos em palavras já traz um alívio inicial.",
@@ -482,7 +491,7 @@ function obterRespostaIALocal(mensagem) {
     "Suas reflexões mostram uma pessoa consciente e que valoriza seu bem-estar emocional, e isso é admirável. ✨ Todos nós passamos por momentos de incerteza e busca por clareza. O que você sente que mais precisa agora - ser ouvido(a), encontrar estratégias práticas, ou apenas processar esses sentimentos?",
     "É significativo termos um espaço seguro para processar nossos pensamentos e emoções. 🍃 Vejo que você está refletindo sobre aspectos importantes da sua vida. Como posso te apoiar melhor neste momento? Prefere explorar mais profundamente esses sentimentos ou buscar estratégias práticas?"
   ];
-  
+
   return respostasGerais[Math.floor(Math.random() * respostasGerais.length)];
 }
 
@@ -512,22 +521,22 @@ Responda de forma natural, empática e útil:`;
 function adicionarMensagem(texto, tipo, elementos) {
   const div = document.createElement('div');
   div.className = `message ${tipo}`;
-  
+
   const timestamp = new Date().toLocaleTimeString();
   div.innerHTML = `${texto}<div class="timestamp">${timestamp}</div>`;
-  
+
   elementos.chatBox.appendChild(div);
   elementos.chatBox.scrollTop = elementos.chatBox.scrollHeight;
-  
+
   return div; // Retornar elemento para poder remover depois
 }
 
 // ===== PESQUISAR CONTATOS =====
 function pesquisarContatos(termo, elementos) {
   if (!elementos.containerContatos) return;
-  
+
   const items = elementos.containerContatos.querySelectorAll('.contact-item');
-  
+
   items.forEach(item => {
     const nome = item.querySelector('.contact-name').textContent.toLowerCase();
     const match = nome.includes(termo.toLowerCase());
@@ -539,15 +548,15 @@ function pesquisarContatos(termo, elementos) {
 function configurarModoInicial(elementos) {
   // Modo inicial: user
   mudarModo('user', elementos);
-  
+
   // Mensagem inicial
   adicionarMensagem('Bem-vindo ao EmoConnect! 🌟 Selecione um contato ou mude para o modo IA.', 'received', elementos);
-  
+
   console.log("✅ Modo inicial configurado");
 }
 
 // ===== TEMA ESCURO =====
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const toggleBtn = document.getElementById('toggle-theme');
   if (toggleBtn) {
     const isDark = localStorage.getItem('tema') === 'dark';
@@ -555,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.body.classList.add('dark-mode');
       toggleBtn.textContent = '☀️';
     }
-    
+
     toggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
       const isDarkMode = document.body.classList.contains('dark-mode');

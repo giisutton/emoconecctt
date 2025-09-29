@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>  <meta charset="UTF-8" />
+
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat - EmoConnect</title>
   <link rel="stylesheet" href="../css/chat.css" />
   <!-- Removido SDK do Google AI e adicionado Fetch API -->
 </head>
+
 <body>
 
   <header>
@@ -27,7 +30,7 @@
       <button id="user-chat-btn" class="active">Chat com Pessoas</button>
       <button id="ai-chat-btn">Chat com IA</button>
     </div>
-    
+
     <div class="chat-wrapper">
       <!-- Lista de contatos (só aparece no modo 'user') -->
       <div class="contacts-list" id="contacts-list">
@@ -69,6 +72,7 @@
     <p>&copy; 2025 EmoConnect. Você não está sozinho.</p>
   </footer>
   <!-- Script do chat NOVO E FUNCIONAL -->
-  <script src="../js/chat_novo.js"></script>
+  <script type="module" src="../js/chat_novo.js"></script>
 </body>
+
 </html>
