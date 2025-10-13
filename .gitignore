@@ -49,9 +49,6 @@ coverage/
 ehthumbs.db
 Thumbs.db
 
-# Firebase
-.firebase/
-
 # Docker
 .dockerignore
 
@@ -66,3 +63,16 @@ Thumbs.db
 # Temporary files
 .tmp/
 .temp/
+
+# Archive files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Vercel
+.vercel
+
+# Don't ignore important config files
+!.env.example
+!.gitignore

@@ -12,24 +12,21 @@
     "build": "vite build",
     "build:prod": "cross-env NODE_ENV=production vite build",
     "preview": "vite preview",
-    "test": "echo \"Tests temporarily disabled\"",
-    "test:ui": "echo \"Tests temporarily disabled\"",
-    "test:coverage": "echo \"Tests temporarily disabled\"",
-    "lint": "echo \"Lint temporarily disabled\"",
-    "lint:fix": "echo \"Lint temporarily disabled\"",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
-    "type-check": "tsc --noEmit",
     "clean": "rimraf dist",
-    "deploy": "npm run build:prod && firebase deploy"
+    "deploy": "npm run build:prod && vercel --prod",
+    "setup": "npm install && echo Setup completo! Execute 'npm run dev' para iniciar.",
+    "db:init": "node server/database/init.js",
+    "db:test": "node -e \"import('./server/config/database.js').then(m => m.testConnection())\""
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "node-fetch": "^3.3.2",
-    "helmet": "^7.1.0",
     "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^5.1.0",
     "express-rate-limit": "^7.4.1",
+    "helmet": "^7.1.0",
+    "mysql2": "^3.15.2",
+    "node-fetch": "^3.3.2",
     "winston": "^3.11.0"
   },
   "devDependencies": {
@@ -49,7 +46,7 @@
     "chat",
     "ia",
     "wellbeing",
-    "firebase"
+    "mysql"
   ],
   "author": "Giovana Sutton",
   "license": "MIT",

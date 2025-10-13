@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - EmoConnect</title>
+  <link rel="stylesheet" href="../css/chat.css" />
+  <!-- Removido SDK do Google AI e adicionado Fetch API -->
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <h1>🌟 EmoConnect</h1>
+      <p class="slogan">Conecte-se com suas emoções. Compartilhe. Inspire.</p>
+      <nav>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="chat.html">Chat</a></li>
+        </ul>
+      </nav>
+    </div>
+    <button id="toggle-theme" class="theme-toggle" title="Alternar tema">🌙</button>
+  </header>
+  <div class="main-container">
+    <div class="chat-mode-selector">
+      <button id="user-chat-btn" class="active">Chat com Pessoas</button>
+      <button id="ai-chat-btn">Chat com IA</button>
+    </div>
+
+    <div class="chat-wrapper">
+      <!-- Lista de contatos (só aparece no modo 'user') -->
+      <div class="contacts-list" id="contacts-list">
+        <div class="contacts-header">
+          <h3>Contatos</h3>
+          <input type="text" id="search-contact" placeholder="Pesquisar..." />
+        </div>
+        <div class="contacts-container">
+          <!-- Os contatos serão adicionados aqui via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Container principal do chat -->
+      <div class="chat-container">
+        <div class="chat-header">
+          <img id="active-contact-avatar" src="https://via.placeholder.com/36x36/6a5acd/white?text=EC" alt="Avatar">
+          <span id="active-contact-name">Chat EmoConnect</span>
+        </div>
+
+        <!-- Área de mensagens -->
+        <div class="chat-box" id="chat"></div>
+
+        <!-- Input de mensagem -->
+        <div class="chat-input">
+          <input type="text" id="mensagemInput" placeholder="Digite sua mensagem..." />
+          <button id="enviarBtn">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 EmoConnect. Você não está sozinho.</p>
+  </footer>
+  <!-- Script do chat (SEM Firebase) -->
+  <script src="../js/chat.js"></script>
+</body>
+
+</html>

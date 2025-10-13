@@ -2,6 +2,12 @@
 
 Uma plataforma completa de saúde mental e apoio emocional com IA integrada, desenvolvida com tecnologias modernas e boas práticas de desenvolvimento.
 
+## 🔗 Links Importantes
+
+- **Deploy na Vercel**: [emoconnect.vercel.app](https://emoconnect.vercel.app) _(Atualizar após deploy)_
+- **Repositório GitHub**: https://github.com/giisutton/emoconecctt
+- **Documentação**: [Ver abaixo](#📋-índice)
+
 ## 📋 Índice
 
 - [Características](#-características)
@@ -32,44 +38,43 @@ Uma plataforma completa de saúde mental e apoio emocional com IA integrada, des
 ### Frontend
 - **HTML5/CSS3/JavaScript ES6+**
 - **Vite** - Build tool moderna
-- **Firebase** - Banco de dados em tempo real
+- **localStorage** - Armazenamento local de dados
 - **PWA** - Progressive Web App
 
 ### Backend
 - **Node.js + Express** - Servidor API
+- **MySQL** - Banco de dados (AlwaysData)
 - **Winston** - Sistema de logs
 - **Helmet** - Segurança HTTP
-- **Rate Limiting** - Proteção contra spam
 
 ### DevOps
-- **Docker** - Containerização
-- **GitHub Actions** - CI/CD
-- **ESLint/Prettier** - Code quality
-- **Vitest** - Framework de testes
+- **Vite** - Build tool moderna
+- **Vercel** - Deploy e hospedagem
+- **Git** - Controle de versão
+- **npm** - Gerenciador de pacotes
 
 ## 🏗️ Estrutura do Projeto
 
 ```
 emoconecctt/
-├── 📁 emoconnect_chat_corrigido/     # Frontend source
+├── 📁 emoconnect/                    # Frontend source
 │   ├── 📁 html/                      # Páginas HTML
 │   ├── 📁 css/                       # Estilos
 │   └── 📁 js/                        # JavaScript modules
 ├── 📁 server/                        # Backend API
 ├── 📁 tests/                         # Testes automatizados
-├── 📁 .github/workflows/             # CI/CD pipelines
-├── 📄 package.json                   # Dependências e scripts
+├──  package.json                   # Dependências e scripts
 ├── 📄 vite.config.js                 # Build configuration
-├── 📄 Dockerfile                     # Container configuration
-└── 📄 docker-compose.yml             # Multi-container setup
+├── 📄 vercel.json                    # Configuração Vercel
+└── 📄 README.md                      # Documentação
 ```
 
 ## 🚀 Instalação
 
 ### Pré-requisitos
-- **Node.js** >= 18.0.0
-- **npm** >= 8.0.0
-- **Git**
+- **Node.js** >= 18.0.0 ([Download aqui](https://nodejs.org/))
+- **npm** >= 8.0.0 (vem com Node.js)
+- **Git** ([Download aqui](https://git-scm.com/))
 
 ### Passo a passo
 
@@ -84,20 +89,31 @@ emoconecctt/
    npm install
    ```
 
-3. **Configure as variáveis de ambiente**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configurations
-   ```
+3. **Configure as variáveis de ambiente (OPCIONAL)**
+   - O projeto funciona sem configuração adicional!
+   - Se quiser usar API do Gemini via servidor (mais seguro):
+     - Copie `.env.example` para `.env`
+     - Adicione sua chave: `GEMINI_API_KEY=sua_chave`
+     - **Obter chave do Gemini**: https://makersuite.google.com/app/apikey
+   - **Nota**: O projeto usa localStorage para salvar dados localmente
 
 4. **Execute em modo de desenvolvimento**
    ```bash
    npm run dev
    ```
+   Ou execute frontend e backend separadamente:
+   ```bash
+   # Terminal 1 - Backend
+   npm run server:dev
+   
+   # Terminal 2 - Frontend
+   npm run client:dev
+   ```
 
 5. **Acesse a aplicação**
-   - Frontend: http://localhost:5173
-   - Backend: http://localhost:3000
+   - **Frontend**: http://localhost:5173
+   - **Backend API**: http://localhost:3000
+   - **Health Check**: http://localhost:3000/api/health
 
 ## 📜 Scripts Disponíveis
 
@@ -125,7 +141,11 @@ npm run test:coverage    # Relatório de cobertura
 
 # Utilitários
 npm run clean            # Limpar build
-npm run deploy           # Deploy para Firebase
+npm run deploy           # Deploy para Vercel
+
+# Banco de Dados
+npm run db:test          # Testar conexão MySQL
+npm run db:init          # Inicializar banco de dados
 ```
 
 ## 🌍 Ambientes de Desenvolvimento
@@ -171,7 +191,39 @@ npm run test -- config.test.js
 
 ## 🐳 Deploy
 
-### Docker (Recomendado)
+### Deploy na Vercel (Recomendado para o projeto)
+
+1. **Instale a CLI do Vercel** (opcional)
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Faça login no Vercel**
+   ```bash
+   vercel login
+   ```
+
+3. **Deploy do projeto**
+   ```bash
+   vercel
+   ```
+   
+4. **Para produção**
+   ```bash
+   vercel --prod
+   ```
+
+5. **Configurar variáveis de ambiente no Vercel**
+   - Acesse: https://vercel.com/dashboard
+   - Vá em Settings > Environment Variables
+   - Adicione todas as variáveis do `.env`
+
+**Ou via GitHub:**
+1. Conecte seu repositório GitHub ao Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático a cada push!
+
+### Docker (Opcional)
 
 ```bash
 # Build da imagem
@@ -184,26 +236,15 @@ docker run -p 3000:3000 emoconnect
 docker-compose up -d
 ```
 
-### Manual
+### Build Manual
 
 ```bash
 # Build para produção
 npm run build:prod
 
-# Upload para servidor
-rsync -avz dist/ user@server:/var/www/emoconnect/
-
-# Restart do servidor
-ssh user@server 'pm2 restart emoconnect'
+# Os arquivos estarão em /dist
+# Faça upload para seu servidor
 ```
-
-### CI/CD Automático
-
-O projeto possui pipeline automático que:
-1. **Executa testes** em cada push
-2. **Build automático** na branch main
-3. **Deploy** para staging e produção
-4. **Verificações de segurança**
 
 ## 📊 Monitoramento
 
@@ -249,6 +290,25 @@ const response = await fetch('/api/v1/chat/gemini', {
 const data = await response.json();
 console.log(data.response);
 ```
+
+## 📖 Como Usar o EmoConnect
+
+### Página Inicial
+1. **Selecione seu humor**: Clique em um dos cards de humor (Feliz, Triste, Ansioso, etc)
+2. **Exercício de Respiração**: Clique em "Respirar" para fazer um exercício guiado
+3. **Atividades**: Marque suas atividades diárias de bem-estar
+4. **Ver Progresso**: Visualize seus gráficos emocionais semanais e mensais
+5. **Mural de Apoio**: Compartilhe mensagens positivas com a comunidade
+
+### Chat
+- **Modo Usuário**: Converse com outros usuários da plataforma
+- **Modo IA**: Converse com nossa assistente de apoio emocional
+- Troque entre os modos usando os botões no topo
+
+### Perfil
+- Configure suas informações pessoais
+- Veja seu histórico de humores
+- Gerencie suas preferências
 
 ## 🤝 Contribuição
 

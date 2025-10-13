@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import dotenv from 'dotenv';
 import winston from 'winston';
+import { testConnection } from './config/database.js';
+import apiRoutes from './routes/api.js';
 
 // Configurar ambiente
 dotenv.config();
@@ -44,7 +46,7 @@ app.use(helmet({
             scriptSrc: ["'self'", "'unsafe-inline'", "https://www.gstatic.com", "https://cdn.jsdelivr.net"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-            connectSrc: ["'self'", "https://*.firebaseio.com", "https://generativelanguage.googleapis.com"],
+            connectSrc: ["'self'", "https://generativelanguage.googleapis.com"],
             imgSrc: ["'self'", "data:", "https:", "blob:"]
         }
     }
@@ -89,7 +91,7 @@ app.use((req, res, next) => {
 // Serve static files
 app.use(express.static(join(__dirname, '../dist')));
 if (NODE_ENV === 'development') {
-    app.use(express.static(join(__dirname, '../emoconnect_chat_corrigido')));
+    app.use(express.static(join(__dirname, '../emoconnect')));
 }
 
 // Health check endpoint
@@ -108,6 +110,9 @@ app.use('/api/v1', (req, res, next) => {
     res.header('API-Version', 'v1');
     next();
 });
+
+// Rotas de dados (banco de dados)
+app.use('/api/v1/data', apiRoutes);
 
 // Gemini AI proxy endpoint (para ocultar API key)
 app.post('/api/v1/chat/gemini', async (req, res) => {
@@ -177,12 +182,16 @@ app.post('/api/v1/analytics/event', (req, res) => {
 });
 
 // Catch-all handler: serve index.html for SPA routes
-app.get('*', (req, res) => {
-    const indexPath = NODE_ENV === 'production'
-        ? join(__dirname, '../dist/index.html')
-        : join(__dirname, '../emoconnect_chat_corrigido/html/index.html');
+app.use((req, res, next) => {
+    if (!req.path.startsWith('/api')) {
+        const indexPath = NODE_ENV === 'production'
+            ? join(__dirname, '../dist/index.html')
+            : join(__dirname, '../emoconnect/html/index.html');
 
-    res.sendFile(indexPath);
+        res.sendFile(indexPath);
+    } else {
+        next();
+    }
 });
 
 // Global error handler
@@ -208,8 +217,16 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     logger.info(`🚀 EmoConnect server running on port ${PORT} in ${NODE_ENV} mode`);
+
+    // Testar conexão com banco de dados
+    const dbConnected = await testConnection();
+    if (dbConnected) {
+        logger.info('✅ Banco de dados conectado com sucesso');
+    } else {
+        logger.warn('⚠️ Falha ao conectar com banco de dados - usando localStorage apenas');
+    }
 });
 
 export default app;

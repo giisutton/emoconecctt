@@ -3,7 +3,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig({
-    root: 'emoconnect_chat_corrigido',
+    root: 'emoconnect',
     base: '/',
 
     build: {
@@ -14,9 +14,9 @@ export default defineConfig({
         minify: 'terser',
         rollupOptions: {
             input: {
-                main: path.resolve(__dirname, 'emoconnect_chat_corrigido/html/index.html'),
-                chat: path.resolve(__dirname, 'emoconnect_chat_corrigido/html/chat.html'),
-                perfil: path.resolve(__dirname, 'emoconnect_chat_corrigido/html/perfil.html')
+                main: path.resolve(__dirname, 'emoconnect/html/index.html'),
+                chat: path.resolve(__dirname, 'emoconnect/html/chat.html'),
+                perfil: path.resolve(__dirname, 'emoconnect/html/perfil.html')
             }
         }
     },
