@@ -2,11 +2,12 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
-    root: './emoconnect',
+    root: './emoconnect/html',
     base: '/',
+    publicDir: '../',
 
     build: {
-        outDir: '../dist',
+        outDir: '../../dist',
         emptyOutDir: true,
         sourcemap: true,
         target: 'es2015',
