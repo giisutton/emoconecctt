@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
     root: './emoconnect',
@@ -12,9 +13,9 @@ export default defineConfig({
         minify: 'terser',
         rollupOptions: {
             input: {
-                main: './html/index.html',
-                chat: './html/chat.html',
-                perfil: './html/perfil.html'
+                main: resolve(__dirname, 'emoconnect/html/index.html'),
+                chat: resolve(__dirname, 'emoconnect/html/chat.html'),
+                perfil: resolve(__dirname, 'emoconnect/html/perfil.html')
             }
         }
     },
