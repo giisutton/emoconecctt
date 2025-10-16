@@ -1,6 +1,6 @@
 {
     "watch": [
-        "backend/server/**/*.js"
+        "server/**/*.js"
     ],
     "ignore": [
         "logs/**",

@@ -2,12 +2,12 @@
   "name": "emoconnect",
   "version": "1.0.0",
   "description": "Plataforma de apoio emocional e saúde mental",
-  "main": "backend/server/index.js",
+  "main": "server/index.js",
   "type": "module",
   "scripts": {
-    "start": "node backend/server/index.js",
+    "start": "node server/index.js",
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
-    "server:dev": "nodemon backend/server/index.js",
+    "server:dev": "nodemon server/index.js",
     "client:dev": "vite",
     "build": "vite build",
     "build:prod": "cross-env NODE_ENV=production vite build",
@@ -15,8 +15,8 @@
     "clean": "rimraf dist",
     "deploy": "npm run build:prod && vercel --prod",
     "setup": "npm install && echo Setup completo! Execute 'npm run dev' para iniciar.",
-    "db:init": "node backend/server/database/init.js",
-    "db:test": "node -e \"import('./backend/server/config/database.js').then(m => m.testConnection())\""
+    "db:init": "node server/database/init.js",
+    "db:test": "node -e \"import('./server/config/database.js').then(m => m.testConnection())\""
   },
   "dependencies": {
     "compression": "^1.7.4",
