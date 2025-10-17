@@ -26,9 +26,11 @@ Authorization: Bearer {seu_token}
 ## 📋 Mudanças Principais
 
 ### ❌ Removido
+
 - Campo `avatar` (não é mais necessário)
 
 ### ✅ Adicionado
+
 - Campo `role` (user, moderator, admin)
 - Sistema completo de permissões
 - Painel administrativo
@@ -72,21 +74,22 @@ Senha: Admin@2025
 
 ### `/api/v1/admin` (Requer Auth)
 
-| Rota | Método | Permissão | Descrição |
-|------|--------|-----------|-----------|
-| `/usuarios` | GET | Mod/Admin | Listar usuários |
-| `/usuarios/:id` | GET | Mod/Admin | Ver usuário |
-| `/usuarios` | POST | Admin | Criar usuário |
-| `/usuarios/:id` | PUT | Admin | Editar usuário |
-| `/usuarios/:id` | DELETE | Admin | Deletar usuário |
-| `/dashboard` | GET | Mod/Admin | Estatísticas |
-| `/logs` | GET | Admin | Auditoria |
+| Rota            | Método | Permissão | Descrição       |
+| --------------- | ------ | --------- | --------------- |
+| `/usuarios`     | GET    | Mod/Admin | Listar usuários |
+| `/usuarios/:id` | GET    | Mod/Admin | Ver usuário     |
+| `/usuarios`     | POST   | Admin     | Criar usuário   |
+| `/usuarios/:id` | PUT    | Admin     | Editar usuário  |
+| `/usuarios/:id` | DELETE | Admin     | Deletar usuário |
+| `/dashboard`    | GET    | Mod/Admin | Estatísticas    |
+| `/logs`         | GET    | Admin     | Auditoria       |
 
 ---
 
 ## 🧪 Testes Rápidos
 
 ### 1. Login Admin
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
@@ -94,12 +97,14 @@ curl -X POST http://localhost:3000/api/v1/auth/login \
 ```
 
 ### 2. Dashboard
+
 ```bash
 curl http://localhost:3000/api/v1/admin/dashboard \
   -H "Authorization: Bearer SEU_TOKEN"
 ```
 
 ### 3. Criar Usuário
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/admin/usuarios \
   -H "Authorization: Bearer SEU_TOKEN" \
@@ -112,7 +117,7 @@ curl -X POST http://localhost:3000/api/v1/admin/usuarios \
 ## 💻 Uso no Frontend
 
 ```javascript
-import { isAdmin, isModerator, getUserRole } from './auth.js';
+import { isAdmin, isModerator, getUserRole } from "./auth.js";
 
 // Verificar se é admin
 if (isAdmin()) {
@@ -154,11 +159,13 @@ npm run dev
 ## 🐛 Troubleshooting
 
 ### Erro: "Column 'role' doesn't exist"
+
 ```bash
 npm run migrate
 ```
 
 ### Erro: "Cannot login as admin"
+
 ```bash
 # Verificar se admin foi criado
 npm run migrate
@@ -168,6 +175,7 @@ npm run db:init
 ```
 
 ### Erro: 403 Forbidden nas rotas admin
+
 - Verifique se o token é de admin
 - Token deve incluir `"role": "admin"` no payload
 

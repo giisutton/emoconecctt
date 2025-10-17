@@ -28,14 +28,10 @@ export function requireRole(...allowedRoles) {
 }
 
 // Verificar se usuário é admin
-export function requireAdmin(req, res, next) {
-  return requireRole("admin")(req, res, next);
-}
+export const requireAdmin = requireRole("admin");
 
 // Verificar se usuário é moderator ou admin
-export function requireModeratorOrAdmin(req, res, next) {
-  return requireRole("moderator", "admin")(req, res, next);
-}
+export const requireModeratorOrAdmin = requireRole("moderator", "admin");
 
 // Verificar permissão específica no banco de dados
 export async function checkPermission(recurso, acao) {
@@ -99,7 +95,7 @@ export async function checkPermission(recurso, acao) {
 }
 
 // Middleware para registrar ações no log de auditoria
-export async function logAuditoria(acao, recurso, recursoId = null) {
+export function logAuditoria(acao, recurso, recursoId = null) {
   return async (req, res, next) => {
     try {
       const connection = await getConnection();
@@ -124,11 +120,13 @@ export async function logAuditoria(acao, recurso, recursoId = null) {
           req.headers["user-agent"]
         ]
       );
+
+      // ✅ Importante: chamar next() mesmo se inserir com sucesso
+      next();
     } catch (error) {
       console.error("❌ Erro ao registrar auditoria:", error);
       // Não bloqueia a requisição se falhar o log
+      next();
     }
-
-    next();
   };
 }
