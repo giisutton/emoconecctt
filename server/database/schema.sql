@@ -7,11 +7,12 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha_hash VARCHAR(255) NOT NULL,
-    avatar VARCHAR(255),
+    role ENUM('user', 'moderator', 'admin') NOT NULL DEFAULT 'user',
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     ativo BOOLEAN DEFAULT TRUE,
-    INDEX idx_email (email)
+    INDEX idx_email (email),
+    INDEX idx_role (role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela de humores/emoções
@@ -92,7 +93,42 @@ CREATE TABLE IF NOT EXISTS configuracoes (
     UNIQUE KEY idx_usuario (usuario_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Inserir dados de exemplo (opcional - remover em produção)
-INSERT INTO usuarios (nome, email, senha_hash, avatar) VALUES
-('Usuário Demo', 'demo@emoconnect.com', '$2b$10$dummyhash', '😊')
+-- Tabela de permissões por role
+CREATE TABLE IF NOT EXISTS permissoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    role ENUM('user', 'moderator', 'admin') NOT NULL,
+    recurso VARCHAR(100) NOT NULL COMMENT 'Ex: users.create, posts.delete',
+    pode_criar BOOLEAN DEFAULT FALSE,
+    pode_ler BOOLEAN DEFAULT TRUE,
+    pode_atualizar BOOLEAN DEFAULT FALSE,
+    pode_deletar BOOLEAN DEFAULT FALSE,
+    UNIQUE KEY idx_role_recurso (role, recurso)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de logs de auditoria
+CREATE TABLE IF NOT EXISTS logs_auditoria (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT,
+    acao VARCHAR(100) NOT NULL COMMENT 'Ex: login, create_user, delete_post',
+    recurso VARCHAR(100) COMMENT 'Tabela/recurso afetado',
+    recurso_id INT COMMENT 'ID do recurso afetado',
+    detalhes JSON COMMENT 'Informações adicionais',
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    data_acao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL,
+    INDEX idx_usuario_data (usuario_id, data_acao),
+    INDEX idx_acao (acao),
+    INDEX idx_data (data_acao)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Inserir usuário admin padrão
+-- Email: admin@emoconnect.com
+-- Senha: Admin@2025
+INSERT INTO usuarios (nome, email, senha_hash, role, ativo) VALUES
+('Administrador',
+ 'admin@emoconnect.com',
+ '$2b$10$WfuTITapdmvGrOS/G4hH9.2F678dHAQ2aNS3hkaBohHJjcgF1QNgC',
+ 'admin',
+ TRUE)
 ON DUPLICATE KEY UPDATE nome=nome;

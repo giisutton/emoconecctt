@@ -22,6 +22,7 @@ export function authenticateToken(req, res, next) {
     req.userId = decoded.userId;
     req.userEmail = decoded.email;
     req.userName = decoded.nome;
+    req.userRole = decoded.role || "user";
 
     next();
   } catch (error) {
@@ -55,6 +56,7 @@ export function optionalAuth(req, res, next) {
     req.userId = decoded.userId;
     req.userEmail = decoded.email;
     req.userName = decoded.nome;
+    req.userRole = decoded.role || "user";
   } catch (error) {
     // Ignora erros e continua sem autenticação
     console.log("Token inválido ou expirado (opcional)");

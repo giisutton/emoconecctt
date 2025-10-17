@@ -16,7 +16,9 @@
     "deploy": "npm run build:prod && vercel --prod",
     "setup": "npm install && echo Setup completo! Execute 'npm run dev' para iniciar.",
     "db:init": "node server/database/init.js",
-    "db:test": "node -e \"import('./server/config/database.js').then(m => m.testConnection())\""
+    "db:test": "node -e \"import('./server/config/database.js').then(m => m.testConnection())\"",
+    "migrate": "node server/database/run_migration.js",
+    "generate-admin-hash": "node server/database/generate_admin_hash.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

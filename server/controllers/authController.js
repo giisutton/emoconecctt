@@ -12,7 +12,8 @@ function generateToken(user) {
     {
       userId: user.id,
       email: user.email,
-      nome: user.nome
+      nome: user.nome,
+      role: user.role
     },
     JWT_SECRET,
     { expiresIn: JWT_EXPIRES_IN }
@@ -22,7 +23,7 @@ function generateToken(user) {
 // 📝 CADASTRO
 export async function cadastro(req, res) {
   try {
-    const { nome, email, senha, avatar } = req.body;
+    const { nome, email, senha } = req.body;
 
     // Validações
     if (!nome || !email || !senha) {
@@ -69,16 +70,16 @@ export async function cadastro(req, res) {
 
     // Inserir usuário
     const [result] = await connection.query(
-      `INSERT INTO usuarios (nome, email, senha_hash, avatar, ativo)
-             VALUES (?, ?, ?, ?, TRUE)`,
-      [nome, email, senhaHash, avatar || "😊"]
+      `INSERT INTO usuarios (nome, email, senha_hash, role, ativo)
+             VALUES (?, ?, ?, 'user', TRUE)`,
+      [nome, email, senhaHash]
     );
 
     const userId = result.insertId;
 
     // Buscar usuário criado
     const [newUser] = await connection.query(
-      "SELECT id, nome, email, avatar, data_criacao FROM usuarios WHERE id = ?",
+      "SELECT id, nome, email, role, data_criacao FROM usuarios WHERE id = ?",
       [userId]
     );
 
@@ -119,7 +120,7 @@ export async function login(req, res) {
 
     // Buscar usuário por email
     const [users] = await connection.query(
-      "SELECT id, nome, email, senha_hash, avatar, ativo FROM usuarios WHERE email = ?",
+      "SELECT id, nome, email, senha_hash, role, ativo FROM usuarios WHERE email = ?",
       [email]
     );
 
@@ -180,7 +181,7 @@ export async function me(req, res) {
 
     const connection = await getConnection();
     const [users] = await connection.query(
-      `SELECT id, nome, email, avatar, data_criacao, data_atualizacao
+      `SELECT id, nome, email, role, data_criacao, data_atualizacao
              FROM usuarios WHERE id = ? AND ativo = TRUE`,
       [userId]
     );
@@ -209,7 +210,7 @@ export async function me(req, res) {
 export async function atualizarPerfil(req, res) {
   try {
     const userId = req.userId;
-    const { nome, avatar } = req.body;
+    const { nome } = req.body;
 
     if (!nome) {
       return res.status(400).json({
@@ -222,13 +223,13 @@ export async function atualizarPerfil(req, res) {
 
     await connection.query(
       `UPDATE usuarios 
-             SET nome = ?, avatar = ?, data_atualizacao = NOW()
+             SET nome = ?, data_atualizacao = NOW()
              WHERE id = ?`,
-      [nome, avatar, userId]
+      [nome, userId]
     );
 
     const [updatedUser] = await connection.query(
-      "SELECT id, nome, email, avatar, data_atualizacao FROM usuarios WHERE id = ?",
+      "SELECT id, nome, email, role, data_atualizacao FROM usuarios WHERE id = ?",
       [userId]
     );
 

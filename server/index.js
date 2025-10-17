@@ -10,6 +10,7 @@ import winston from "winston";
 import { testConnection } from "./config/database.js";
 import apiRoutes from "./routes/api.js";
 import authRoutes from "./routes/auth.js";
+import adminRoutes from "./routes/admin.js";
 import { authenticateToken } from "./middleware/auth.js";
 
 // Configurar ambiente
@@ -132,6 +133,9 @@ app.use("/api/v1", (req, res, next) => {
 
 // Rotas de autenticação (públicas e protegidas)
 app.use("/api/v1/auth", authRoutes);
+
+// Rotas administrativas (requerem autenticação e role admin/moderator)
+app.use("/api/v1/admin", adminRoutes);
 
 // Rotas de dados (protegidas - requerem autenticação)
 app.use("/api/v1/data", authenticateToken, apiRoutes);

@@ -26,7 +26,7 @@ export function saveUser(user) {
   // Compatibilidade com código existente
   localStorage.setItem("userName", user.nome);
   localStorage.setItem("userEmail", user.email);
-  localStorage.setItem("userAvatar", user.avatar || "😊");
+  localStorage.setItem("userRole", user.role || "user");
 }
 
 export function getUser() {
@@ -38,7 +38,7 @@ export function removeUser() {
   localStorage.removeItem(USER_KEY);
   localStorage.removeItem("userName");
   localStorage.removeItem("userEmail");
-  localStorage.removeItem("userAvatar");
+  localStorage.removeItem("userRole");
 }
 
 // ===========================
@@ -124,14 +124,14 @@ export async function fetchWithAuth(url, options = {}) {
 // CADASTRO
 // ===========================
 
-export async function cadastrar(nome, email, senha, avatar = "😊") {
+export async function cadastrar(nome, email, senha) {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/cadastro`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ nome, email, senha, avatar })
+      body: JSON.stringify({ nome, email, senha })
     });
 
     const data = await response.json();
@@ -209,11 +209,11 @@ export async function logout() {
 // ATUALIZAR PERFIL
 // ===========================
 
-export async function atualizarPerfil(nome, avatar) {
+export async function atualizarPerfil(nome) {
   try {
     const data = await fetchWithAuth(`${API_BASE_URL}/auth/perfil`, {
       method: "PUT",
-      body: JSON.stringify({ nome, avatar })
+      body: JSON.stringify({ nome })
     });
 
     // Atualizar dados locais
@@ -298,7 +298,20 @@ export function getUserEmail() {
   return user ? user.email : "";
 }
 
-export function getUserAvatar() {
+export function getUserRole() {
   const user = getUser();
-  return user ? user.avatar : "😊";
+  return user ? user.role : "user";
+}
+
+export function isAdmin() {
+  return getUserRole() === "admin";
+}
+
+export function isModerator() {
+  return getUserRole() === "moderator";
+}
+
+export function isModeratorOrAdmin() {
+  const role = getUserRole();
+  return role === "moderator" || role === "admin";
 }
