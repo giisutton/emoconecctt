@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - EmoConnect</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body class="auth-page">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>🌟 EmoConnect</h1>
+          <p>Conecte-se com suas emoções</p>
+        </div>
+
+        <!-- Mensagem de sessão expirada -->
+        <div
+          id="expired-message"
+          class="alert alert-warning"
+          style="display: none"
+        >
+          <i class="fas fa-exclamation-triangle"></i>
+          Sua sessão expirou. Por favor, faça login novamente.
+        </div>
+
+        <!-- Formulário de Login -->
+        <form id="login-form" class="auth-form">
+          <h2>Entrar</h2>
+
+          <div class="form-group">
+            <label for="email"> <i class="fas fa-envelope"></i> Email </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="seu@email.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="senha"> <i class="fas fa-lock"></i> Senha </label>
+            <div class="password-input">
+              <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="••••••"
+                required
+                autocomplete="current-password"
+                minlength="6"
+              />
+              <button
+                type="button"
+                class="toggle-password"
+                id="toggle-password"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="error-message"
+            class="alert alert-error"
+            style="display: none"
+          ></div>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-block"
+            id="login-btn"
+          >
+            <i class="fas fa-sign-in-alt"></i> Entrar
+          </button>
+
+          <div class="auth-footer">
+            <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+          </div>
+        </form>
+      </div>
+
+      <div class="auth-illustration">
+        <div class="illustration-content">
+          <i class="fas fa-heart illustration-icon"></i>
+          <h3>Bem-vindo de volta!</h3>
+          <p>Continuemos sua jornada de autocuidado e bem-estar emocional.</p>
+
+          <div class="benefits">
+            <div class="benefit-item">
+              <i class="fas fa-comment-dots"></i>
+              <span>Chat com IA especializada</span>
+            </div>
+            <div class="benefit-item">
+              <i class="fas fa-chart-line"></i>
+              <span>Acompanhe seu progresso</span>
+            </div>
+            <div class="benefit-item">
+              <i class="fas fa-users"></i>
+              <span>Comunidade de apoio</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { login, redirectIfAuthenticated } from "../js/auth.js";
+
+      // Redirecionar se já estiver logado
+      redirectIfAuthenticated();
+
+      // Verificar se sessão expirou
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("expired") === "true") {
+        document.getElementById("expired-message").style.display = "block";
+      }
+
+      // Toggle mostrar/ocultar senha
+      const togglePassword = document.getElementById("toggle-password");
+      const senhaInput = document.getElementById("senha");
+
+      togglePassword.addEventListener("click", () => {
+        const type = senhaInput.type === "password" ? "text" : "password";
+        senhaInput.type = type;
+
+        const icon = togglePassword.querySelector("i");
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
+      });
+
+      // Formulário de login
+      const loginForm = document.getElementById("login-form");
+      const errorMessage = document.getElementById("error-message");
+      const loginBtn = document.getElementById("login-btn");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const senha = document.getElementById("senha").value;
+
+        // Limpar erro anterior
+        errorMessage.style.display = "none";
+        errorMessage.textContent = "";
+
+        // Validações básicas
+        if (!email || !senha) {
+          showError("Por favor, preencha todos os campos");
+          return;
+        }
+
+        // Desabilitar botão durante requisição
+        loginBtn.disabled = true;
+        loginBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+
+        try {
+          await login(email, senha);
+
+          // Redirecionar para página inicial
+          window.location.href = "/html/index.html";
+        } catch (error) {
+          showError(error.message || "Erro ao fazer login. Tente novamente.");
+        } finally {
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+        }
+      });
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = "block";
+
+        // Scroll para o erro
+        errorMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    </script>
+  </body>
+</html>

@@ -1,208 +1,308 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - EmoConnect</title>
+    <link rel="stylesheet" href="../css/perfil.css" />
+    <script src="../js/perfil.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil - EmoConnect</title>
-  <link rel="stylesheet" href="../css/perfil.css" />
-  <script src="../js/perfil.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
+  <body>
+    <!-- 🔒 Proteção de Rota - Verificar Autenticação -->
+    <script type="module">
+      import {
+        redirectIfNotAuthenticated,
+        getUserName,
+        getUserEmail
+      } from "../js/auth.js";
+      redirectIfNotAuthenticated();
 
-<body>
-  <header>
-    <div class="container">
-      <h1>🌟 EmoConnect</h1>
-      <p id="datetime"></p>
-      <nav>
-        <ul>
-          <li><a href="index.html">Início</a></li>
-          <li><a href="perfil.html">Perfil</a></li>
-          <li><a href="chat.html">Chat</a></li>
-        </ul>
-      </nav>
-    </div>
-    <button id="toggle-theme" class="theme-toggle" title="Alternar tema">🌙</button>
-  </header>
+      // Atualizar dados do usuário quando a página carregar
+      window.addEventListener("DOMContentLoaded", () => {
+        const profileName = document.getElementById("profile-name");
+        if (profileName) {
+          profileName.textContent = getUserName();
+        }
+      });
+    </script>
 
-  <main class="profile-layout">
-    <aside class="profile-sidebar">
-      <div class="profile-banner">
-        <p id="daily-message">"Hoje é um bom dia para cuidar de você."</p>
+    <header>
+      <div class="container">
+        <h1>🌟 EmoConnect</h1>
+        <p id="datetime"></p>
+        <nav>
+          <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="perfil.html" class="active">Perfil</a></li>
+            <li><a href="chat.html">Chat</a></li>
+            <li>
+              <a href="#" id="logout-btn" style="color: #ff4757">
+                <i class="fas fa-sign-out-alt"></i> Sair
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
+      <button id="toggle-theme" class="theme-toggle" title="Alternar tema">
+        🌙
+      </button>
+    </header>
 
-      <img src="user-placeholder.png" alt="Foto de perfil" class="profile-pic" id="profile-img" />
+    <!-- Script de Logout -->
+    <script type="module">
+      import { logout } from "../js/auth.js";
 
-      <h2 id="profile-name">Fulano de Tal</h2>
-      <p class="bio" id="profile-bio">"Aqui para compartilhar emoções e experiências."</p>
+      const logoutBtn = document.getElementById("logout-btn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+          e.preventDefault();
 
-      <button id="edit-profile-btn"><i class="fas fa-edit"></i> Editar Perfil</button>
-      <button id="toggle-public-view"><i class="fas fa-eye"></i> Ver como público</button>
+          const confirmar = confirm("Deseja realmente sair?");
+          if (confirmar) {
+            await logout();
+            window.location.href = "/html/login.html";
+          }
+        });
+      }
+    </script>
 
-      <div class="progress-bar">
-        <p>Você compartilhou <span id="post-count">0</span> posts 💬</p>
-        <progress id="post-progress" max="10" value="0"></progress>
-      </div>
+    <main class="profile-layout">
+      <aside class="profile-sidebar">
+        <div class="profile-banner">
+          <p id="daily-message">"Hoje é um bom dia para cuidar de você."</p>
+        </div>
 
-      <div class="background-selector">
-        <label for="background-theme">🎨 Fundo:</label>
-        <select id="background-theme">
-          <option value="default">Padrão</option>
-          <option value="sunset">Pôr do Sol</option>
-          <option value="floral">Floral</option>
-          <option value="dark">Escuro</option>
-        </select>
-      </div>
-    </aside>
+        <img
+          src="user-placeholder.png"
+          alt="Foto de perfil"
+          class="profile-pic"
+          id="profile-img"
+        />
 
-    <section class="profile-main">
-      <div class="tabs">
-        <button class="tab active" data-tab="sobre">Sobre Mim</button>
-        <button class="tab" data-tab="posts">Posts</button>
-        <button class="tab" data-tab="humor">Humor Diário</button>
-        <button class="tab" data-tab="galeria">Galeria</button>
-        <button class="tab" data-tab="config">Configurações</button>
-      </div>
+        <h2 id="profile-name">Fulano de Tal</h2>
+        <p class="bio" id="profile-bio">
+          "Aqui para compartilhar emoções e experiências."
+        </p>
 
-      <div id="tab-sobre" class="tab-content active">
-        <p><strong>Idade:</strong> <span id="idade">25 anos</span></p>
-        <p><strong>Localização:</strong> <span id="localizacao">São Paulo, Brasil</span></p>
-        <p><strong>Interesses:</strong> <span id="interesses">Música, Livros, Bem-estar</span></p>
-      </div>
+        <button id="edit-profile-btn">
+          <i class="fas fa-edit"></i> Editar Perfil
+        </button>
+        <button id="toggle-public-view">
+          <i class="fas fa-eye"></i> Ver como público
+        </button>
 
-      <div id="tab-posts" class="tab-content">
-        <form id="post-form">
-          <textarea id="new-post" placeholder="Escreva algo..."></textarea>
-          <div class="emotion-selector">
-            <p>Como você está se sentindo?</p>
-            <div class="emotion-buttons">
-              <button type="button" class="emotion-btn" data-emotion="feliz">😊 Feliz</button>
-              <button type="button" class="emotion-btn" data-emotion="triste">😢 Triste</button>
-              <button type="button" class="emotion-btn" data-emotion="ansioso">😰 Ansioso</button>
-              <button type="button" class="emotion-btn" data-emotion="calmo">😌 Calmo</button>
-              <button type="button" class="emotion-btn" data-emotion="irritado">😠 Irritado</button>
+        <div class="progress-bar">
+          <p>Você compartilhou <span id="post-count">0</span> posts 💬</p>
+          <progress id="post-progress" max="10" value="0"></progress>
+        </div>
+
+        <div class="background-selector">
+          <label for="background-theme">🎨 Fundo:</label>
+          <select id="background-theme">
+            <option value="default">Padrão</option>
+            <option value="sunset">Pôr do Sol</option>
+            <option value="floral">Floral</option>
+            <option value="dark">Escuro</option>
+          </select>
+        </div>
+      </aside>
+
+      <section class="profile-main">
+        <div class="tabs">
+          <button class="tab active" data-tab="sobre">Sobre Mim</button>
+          <button class="tab" data-tab="posts">Posts</button>
+          <button class="tab" data-tab="humor">Humor Diário</button>
+          <button class="tab" data-tab="galeria">Galeria</button>
+          <button class="tab" data-tab="config">Configurações</button>
+        </div>
+
+        <div id="tab-sobre" class="tab-content active">
+          <p><strong>Idade:</strong> <span id="idade">25 anos</span></p>
+          <p>
+            <strong>Localização:</strong>
+            <span id="localizacao">São Paulo, Brasil</span>
+          </p>
+          <p>
+            <strong>Interesses:</strong>
+            <span id="interesses">Música, Livros, Bem-estar</span>
+          </p>
+        </div>
+
+        <div id="tab-posts" class="tab-content">
+          <form id="post-form">
+            <textarea id="new-post" placeholder="Escreva algo..."></textarea>
+            <div class="emotion-selector">
+              <p>Como você está se sentindo?</p>
+              <div class="emotion-buttons">
+                <button type="button" class="emotion-btn" data-emotion="feliz">
+                  😊 Feliz
+                </button>
+                <button type="button" class="emotion-btn" data-emotion="triste">
+                  😢 Triste
+                </button>
+                <button
+                  type="button"
+                  class="emotion-btn"
+                  data-emotion="ansioso"
+                >
+                  😰 Ansioso
+                </button>
+                <button type="button" class="emotion-btn" data-emotion="calmo">
+                  😌 Calmo
+                </button>
+                <button
+                  type="button"
+                  class="emotion-btn"
+                  data-emotion="irritado"
+                >
+                  😠 Irritado
+                </button>
+              </div>
             </div>
-          </div>
-          <button type="submit"><i class="fas fa-paper-plane"></i> Publicar</button>
-        </form>
+            <button type="submit">
+              <i class="fas fa-paper-plane"></i> Publicar
+            </button>
+          </form>
 
-        <input type="text" id="search-posts" placeholder="🔎 Buscar post...">
-        <div class="post-list" id="post-list"></div>
-      </div>
+          <input
+            type="text"
+            id="search-posts"
+            placeholder="🔎 Buscar post..."
+          />
+          <div class="post-list" id="post-list"></div>
+        </div>
 
-      <div id="tab-humor" class="tab-content">
-        <h3>Registro de Humor Diário</h3>
-        <div class="mood-tracker">
-          <div class="mood-today">
-            <h4>Como você está se sentindo hoje?</h4>
-            <div class="mood-buttons">
-              <button class="mood-btn" data-mood="excelente">😁 Excelente</button>
-              <button class="mood-btn" data-mood="bem">🙂 Bem</button>
-              <button class="mood-btn" data-mood="neutro">😐 Neutro</button>
-              <button class="mood-btn" data-mood="mal">🙁 Mal</button>
-              <button class="mood-btn" data-mood="pessimo">😞 Péssimo</button>
+        <div id="tab-humor" class="tab-content">
+          <h3>Registro de Humor Diário</h3>
+          <div class="mood-tracker">
+            <div class="mood-today">
+              <h4>Como você está se sentindo hoje?</h4>
+              <div class="mood-buttons">
+                <button class="mood-btn" data-mood="excelente">
+                  😁 Excelente
+                </button>
+                <button class="mood-btn" data-mood="bem">🙂 Bem</button>
+                <button class="mood-btn" data-mood="neutro">😐 Neutro</button>
+                <button class="mood-btn" data-mood="mal">🙁 Mal</button>
+                <button class="mood-btn" data-mood="pessimo">😞 Péssimo</button>
+              </div>
+              <div class="mood-notes">
+                <textarea
+                  id="mood-note"
+                  placeholder="Anote aqui o que influenciou seu humor hoje..."
+                ></textarea>
+                <button id="save-mood">Salvar registro</button>
+              </div>
             </div>
-            <div class="mood-notes">
-              <textarea id="mood-note" placeholder="Anote aqui o que influenciou seu humor hoje..."></textarea>
-              <button id="save-mood">Salvar registro</button>
-            </div>
-          </div>
 
-          <div class="mood-history">
-            <h4>Histórico de Humor</h4>
-            <div class="mood-calendar" id="mood-calendar">
-              <!-- Gerado dinamicamente pelo JavaScript -->
-            </div>
-            <div class="mood-chart">
-              <h5>Seu Humor na Última Semana</h5>
-              <div class="chart-container" id="mood-chart">
-                <!-- Gráfico gerado dinamicamente pelo JavaScript -->
+            <div class="mood-history">
+              <h4>Histórico de Humor</h4>
+              <div class="mood-calendar" id="mood-calendar">
+                <!-- Gerado dinamicamente pelo JavaScript -->
+              </div>
+              <div class="mood-chart">
+                <h5>Seu Humor na Última Semana</h5>
+                <div class="chart-container" id="mood-chart">
+                  <!-- Gráfico gerado dinamicamente pelo JavaScript -->
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div id="tab-galeria" class="tab-content">
+          <h3>Galeria de Fotos</h3>
+          <div class="photo-upload">
+            <button id="add-photo">
+              <i class="fas fa-plus"></i> Adicionar Foto
+            </button>
+            <input
+              type="file"
+              id="photo-input"
+              accept="image/*"
+              style="display: none"
+              multiple
+            />
+          </div>
+          <div class="gallery-container" id="photo-gallery">
+            <!-- Fotos serão adicionadas pelo JavaScript -->
+          </div>
+        </div>
+
+        <div id="tab-config" class="tab-content">
+          <h3>Preferências</h3>
+          <div class="config-item">
+            <label>
+              <input type="checkbox" id="notificacoes-check" />
+              Receber notificações
+            </label>
+          </div>
+          <div class="config-item">
+            <label>
+              <input type="checkbox" id="mensagens-privadas-check" checked />
+              Permitir mensagens privadas
+            </label>
+          </div>
+          <div class="config-item">
+            <label>Idioma:</label>
+            <select id="idioma-select">
+              <option value="pt-br">Português (Brasil)</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+            </select>
+          </div>
+          <div class="config-item">
+            <label>Visibilidade do perfil:</label>
+            <select id="privacidade-select">
+              <option value="publico">Público</option>
+              <option value="amigos">Apenas amigos</option>
+              <option value="privado">Privado</option>
+            </select>
+          </div>
+
+          <h3>Conectar emoções</h3>
+          <div class="config-item">
+            <label>
+              <input type="checkbox" id="mostrar-humor-check" checked />
+              Mostrar meu humor diário no perfil
+            </label>
+          </div>
+          <div class="config-item">
+            <label>
+              <input type="checkbox" id="lembretes-check" />
+              Lembretes para registro de humor
+            </label>
+          </div>
+
+          <button id="save-config-btn" class="save-btn">
+            Salvar preferências
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal" id="edit-modal">
+      <div class="modal-content">
+        <h3>Editar Perfil</h3>
+        <label>Nome:</label><input type="text" id="edit-name" />
+        <label>Bio:</label><input type="text" id="edit-bio" />
+        <label>Idade:</label><input type="text" id="edit-age" />
+        <label>Localização:</label><input type="text" id="edit-location" />
+        <label>Interesses:</label><input type="text" id="edit-interests" />
+        <button id="save-profile">Salvar</button>
+        <button id="cancel-edit">Cancelar</button>
       </div>
-
-      <div id="tab-galeria" class="tab-content">
-        <h3>Galeria de Fotos</h3>
-        <div class="photo-upload">
-          <button id="add-photo"><i class="fas fa-plus"></i> Adicionar Foto</button>
-          <input type="file" id="photo-input" accept="image/*" style="display: none;" multiple>
-        </div>
-        <div class="gallery-container" id="photo-gallery">
-          <!-- Fotos serão adicionadas pelo JavaScript -->
-        </div>
-      </div>
-
-      <div id="tab-config" class="tab-content">
-        <h3>Preferências</h3>
-        <div class="config-item">
-          <label>
-            <input type="checkbox" id="notificacoes-check">
-            Receber notificações
-          </label>
-        </div>
-        <div class="config-item">
-          <label>
-            <input type="checkbox" id="mensagens-privadas-check" checked>
-            Permitir mensagens privadas
-          </label>
-        </div>
-        <div class="config-item">
-          <label>Idioma:</label>
-          <select id="idioma-select">
-            <option value="pt-br">Português (Brasil)</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-          </select>
-        </div>
-        <div class="config-item">
-          <label>Visibilidade do perfil:</label>
-          <select id="privacidade-select">
-            <option value="publico">Público</option>
-            <option value="amigos">Apenas amigos</option>
-            <option value="privado">Privado</option>
-          </select>
-        </div>
-
-        <h3>Conectar emoções</h3>
-        <div class="config-item">
-          <label>
-            <input type="checkbox" id="mostrar-humor-check" checked>
-            Mostrar meu humor diário no perfil
-          </label>
-        </div>
-        <div class="config-item">
-          <label>
-            <input type="checkbox" id="lembretes-check">
-            Lembretes para registro de humor
-          </label>
-        </div>
-
-        <button id="save-config-btn" class="save-btn">Salvar preferências</button>
-      </div>
-    </section>
-  </main>
-
-  <div class="modal" id="edit-modal">
-    <div class="modal-content">
-      <h3>Editar Perfil</h3>
-      <label>Nome:</label><input type="text" id="edit-name" />
-      <label>Bio:</label><input type="text" id="edit-bio" />
-      <label>Idade:</label><input type="text" id="edit-age" />
-      <label>Localização:</label><input type="text" id="edit-location" />
-      <label>Interesses:</label><input type="text" id="edit-interests" />
-      <button id="save-profile">Salvar</button>
-      <button id="cancel-edit">Cancelar</button>
     </div>
-  </div>
 
-  <footer>
-    <p>&copy; 2025 EmoConnect</p>
-  </footer>
+    <footer>
+      <p>&copy; 2025 EmoConnect</p>
+    </footer>
 
-  <!-- Script duplicado removido -->
-</body>
-
+    <!-- Script duplicado removido -->
+  </body>
 </html>

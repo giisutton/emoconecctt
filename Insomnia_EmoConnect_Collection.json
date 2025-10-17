@@ -1,0 +1,502 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-17T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_emoconnect",
+      "parentId": null,
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "EmoConnect API",
+      "description": "API completa do EmoConnect - Plataforma de Apoio Emocional",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "api_url": "http://localhost:3000/api/v1",
+        "token": ""
+      },
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "🔐 Autenticação",
+      "description": "Rotas de autenticação (cadastro, login, perfil)",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_cadastro",
+      "parentId": "fld_auth",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Cadastro",
+      "description": "Criar nova conta de usuário",
+      "url": "{{ api_url }}/auth/cadastro",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"João Silva\",\n  \"email\": \"joao@email.com\",\n  \"senha\": \"senha123\",\n  \"avatar\": \"😊\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_login",
+      "parentId": "fld_auth",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Login",
+      "description": "Fazer login e obter token JWT",
+      "url": "{{ api_url }}/auth/login",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"joao@email.com\",\n  \"senha\": \"senha123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_me",
+      "parentId": "fld_auth",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Meus Dados",
+      "description": "Obter dados do usuário logado (requer token)",
+      "url": "{{ api_url }}/auth/me",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_verificar_email",
+      "parentId": "fld_auth",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Verificar Email",
+      "description": "Verificar se email já está cadastrado",
+      "url": "{{ api_url }}/auth/verificar-email/joao@email.com",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_atualizar_perfil",
+      "parentId": "fld_auth",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Atualizar Perfil",
+      "description": "Atualizar nome e avatar (requer token)",
+      "url": "{{ api_url }}/auth/perfil",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"João Silva Atualizado\",\n  \"avatar\": \"🌟\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_alterar_senha",
+      "parentId": "fld_auth",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Alterar Senha",
+      "description": "Alterar senha do usuário (requer token)",
+      "url": "{{ api_url }}/auth/senha",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"senhaAtual\": \"senha123\",\n  \"novaSenha\": \"novaSenha123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_logout",
+      "parentId": "fld_auth",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Logout",
+      "description": "Fazer logout (requer token)",
+      "url": "{{ api_url }}/auth/logout",
+      "method": "POST",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "fld_humores",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "😊 Humores",
+      "description": "Gerenciar registro de humores",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_get_humores",
+      "parentId": "fld_humores",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Listar Humores",
+      "description": "Buscar humores do usuário (últimos 7 dias)",
+      "url": "{{ api_url }}/data/humores/1?dias=7",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_post_humor",
+      "parentId": "fld_humores",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Salvar Humor",
+      "description": "Registrar novo humor",
+      "url": "{{ api_url }}/data/humores",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"usuario_id\": 1,\n  \"humor\": \"Feliz\",\n  \"intensidade\": 8,\n  \"observacoes\": \"Dia produtivo!\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "fld_atividades",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "✅ Atividades",
+      "description": "Gerenciar atividades de bem-estar",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_get_atividades",
+      "parentId": "fld_atividades",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Listar Atividades",
+      "description": "Buscar atividades do usuário",
+      "url": "{{ api_url }}/data/atividades/1?tipo=Fisica",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_post_atividade",
+      "parentId": "fld_atividades",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Salvar Atividade",
+      "description": "Registrar nova atividade",
+      "url": "{{ api_url }}/data/atividades",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"usuario_id\": 1,\n  \"tipo\": \"Fisica\",\n  \"nome\": \"Caminhada\",\n  \"descricao\": \"Caminhada no parque\",\n  \"duracao_minutos\": 30,\n  \"concluida\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "fld_chat",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "💬 Chat & Mensagens",
+      "description": "Chat com IA e mensagens entre usuários",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_gemini",
+      "parentId": "fld_chat",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Chat com IA (Gemini)",
+      "description": "Enviar mensagem para assistente IA",
+      "url": "{{ api_url }}/chat/gemini",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"Estou me sentindo ansioso hoje. O que devo fazer?\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_get_mensagens",
+      "parentId": "fld_chat",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Listar Mensagens",
+      "description": "Buscar mensagens entre usuários",
+      "url": "{{ api_url }}/data/mensagens/1/contato123",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_post_mensagem",
+      "parentId": "fld_chat",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Salvar Mensagem",
+      "description": "Enviar mensagem para outro usuário",
+      "url": "{{ api_url }}/data/mensagens",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"usuario_id\": 1,\n  \"contato\": \"contato123\",\n  \"tipo\": \"sent\",\n  \"conteudo\": \"Oi! Como você está?\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "fld_progresso",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "📊 Progresso",
+      "description": "Acompanhamento de progresso e metas",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_get_progresso",
+      "parentId": "fld_progresso",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Listar Progresso",
+      "description": "Buscar dados de progresso do usuário",
+      "url": "{{ api_url }}/data/progresso/1",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_post_progresso",
+      "parentId": "fld_progresso",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Salvar Progresso",
+      "description": "Registrar progresso/meta",
+      "url": "{{ api_url }}/data/progresso",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"usuario_id\": 1,\n  \"categoria\": \"atividades_fisicas\",\n  \"valor\": 5,\n  \"meta\": 7,\n  \"data_registro\": \"2025-10-17\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "fld_respiracao",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "🧘 Respiração",
+      "description": "Sessões de exercício de respiração",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_post_respiracao",
+      "parentId": "fld_respiracao",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Salvar Sessão de Respiração",
+      "description": "Registrar sessão de exercício de respiração",
+      "url": "{{ api_url }}/data/respiracao",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"usuario_id\": 1,\n  \"duracao_segundos\": 180,\n  \"ciclos_completos\": 3\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}"
+        }
+      ],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "fld_health",
+      "parentId": "wrk_emoconnect",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "🏥 Health Check",
+      "description": "Status do servidor",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_health",
+      "parentId": "fld_health",
+      "modified": 1697500000000,
+      "created": 1697500000000,
+      "name": "Status do Servidor",
+      "description": "Verificar se servidor está online",
+      "url": "{{ api_url }}/health",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "_type": "request"
+    }
+  ]
+}
