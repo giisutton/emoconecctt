@@ -3,14 +3,17 @@
 ## 📋 Resumo das Mudanças
 
 ### ❌ Campo Removido:
+
 - **`avatar`** - Removido da tabela `usuarios`
 
 ### ✨ Novo Campo Adicionado:
+
 - **`role`** - Define o papel do usuário na plataforma
   - Valores possíveis: `user`, `moderator`, `admin`
   - Valor padrão: `user`
 
 ### 🆕 Novas Tabelas:
+
 1. **`permissoes`** - Define permissões por role
 2. **`logs_auditoria`** - Registra todas as ações importantes
 
@@ -19,7 +22,9 @@
 ## 👥 Roles Disponíveis
 
 ### 🙂 USER (Usuário Comum)
+
 **Permissões:**
+
 - ✅ Registrar humores e emoções
 - ✅ Criar e gerenciar atividades
 - ✅ Enviar mensagens no chat
@@ -29,26 +34,32 @@
 - ✅ Visualizar seu progresso
 
 **Restrições:**
+
 - ❌ Não pode acessar dados de outros usuários
 - ❌ Não pode gerenciar usuários
 - ❌ Não pode acessar relatórios globais
 - ❌ Não pode ver logs de auditoria
 
 ### 👮 MODERATOR (Moderador)
+
 **Permissões (USER +):**
+
 - ✅ Ver lista de usuários
 - ✅ Ver perfil de outros usuários
 - ✅ Acessar relatórios estatísticos
 - ✅ Visualizar dados agregados
 
 **Restrições:**
+
 - ❌ Não pode criar/deletar usuários
 - ❌ Não pode alterar roles
 - ❌ Não pode ver logs de auditoria
 - ❌ Não pode alterar permissões
 
 ### 👑 ADMIN (Administrador)
+
 **Permissões:**
+
 - ✅ **ACESSO TOTAL** a todas as funcionalidades
 - ✅ Criar, editar e deletar usuários
 - ✅ Alterar roles de usuários
@@ -63,6 +74,7 @@
 ## 🔐 Usuário Administrador Padrão
 
 ### Credenciais:
+
 ```
 Email: admin@emoconnect.com
 Senha: Admin@2025
@@ -79,6 +91,7 @@ Senha: Admin@2025
 #### 👥 Gestão de Usuários
 
 **Listar Usuários** (Admin e Moderator)
+
 ```http
 GET /api/v1/admin/usuarios
 Authorization: Bearer {token}
@@ -92,12 +105,14 @@ Query Params:
 ```
 
 **Buscar Usuário por ID** (Admin e Moderator)
+
 ```http
 GET /api/v1/admin/usuarios/:id
 Authorization: Bearer {token}
 ```
 
 **Criar Usuário** (Apenas Admin)
+
 ```http
 POST /api/v1/admin/usuarios
 Authorization: Bearer {token}
@@ -112,6 +127,7 @@ Content-Type: application/json
 ```
 
 **Atualizar Usuário** (Apenas Admin)
+
 ```http
 PUT /api/v1/admin/usuarios/:id
 Authorization: Bearer {token}
@@ -126,6 +142,7 @@ Content-Type: application/json
 ```
 
 **Deletar Usuário** (Apenas Admin)
+
 ```http
 DELETE /api/v1/admin/usuarios/:id
 Authorization: Bearer {token}
@@ -134,6 +151,7 @@ Authorization: Bearer {token}
 #### 📊 Dashboard e Relatórios
 
 **Dashboard Administrativo** (Admin e Moderator)
+
 ```http
 GET /api/v1/admin/dashboard
 Authorization: Bearer {token}
@@ -148,6 +166,7 @@ Retorna:
 ```
 
 **Logs de Auditoria** (Apenas Admin)
+
 ```http
 GET /api/v1/admin/logs
 Authorization: Bearer {token}
@@ -197,6 +216,7 @@ npm run db:init
 ### Backend
 
 #### ✅ Arquivos Criados:
+
 - `server/database/migrations/001_add_roles.sql` - Script de migração
 - `server/database/run_migration.js` - Script automatizado
 - `server/database/generate_admin_hash.js` - Gerar hash de senha
@@ -204,6 +224,7 @@ npm run db:init
 - `server/routes/admin.js` - Rotas administrativas
 
 #### 📝 Arquivos Modificados:
+
 - `server/database/schema.sql` - Schema atualizado
 - `server/controllers/authController.js` - Removido `avatar`, adicionado `role`
 - `server/middleware/auth.js` - Adiciona `req.userRole`
@@ -212,6 +233,7 @@ npm run db:init
 ### Frontend
 
 #### 📝 Arquivos Modificados:
+
 - `emoconnect/js/auth.js`:
   - Removido `avatar` de `saveUser()`
   - Removido `getUserAvatar()`
@@ -221,6 +243,7 @@ npm run db:init
   - Adicionado `isModeratorOrAdmin()`
 
 #### ⚠️ Páginas a Atualizar:
+
 - `emoconnect/html/cadastro.html` - Remover seletor de avatar
 - `emoconnect/html/perfil.html` - Remover edição de avatar
 
@@ -229,6 +252,7 @@ npm run db:init
 ## 🧪 Como Testar
 
 ### 1. Executar Migração
+
 ```bash
 npm run migrate  # (se adicionar script no package.json)
 # OU
@@ -236,6 +260,7 @@ node server/database/run_migration.js
 ```
 
 ### 2. Testar Login Admin
+
 ```bash
 # No Insomnia/Postman:
 POST http://localhost:3000/api/v1/auth/login
@@ -262,6 +287,7 @@ Content-Type: application/json
 ```
 
 ### 3. Testar Rotas Admin
+
 ```bash
 # Listar usuários (use o token do admin)
 GET http://localhost:3000/api/v1/admin/usuarios
@@ -273,6 +299,7 @@ Authorization: Bearer {token_admin}
 ```
 
 ### 4. Testar Permissões
+
 ```bash
 # Criar usuário comum
 POST http://localhost:3000/api/v1/auth/cadastro
@@ -350,6 +377,7 @@ CREATE TABLE logs_auditoria (
 ## 🔒 Segurança
 
 ### ✅ Implementado:
+
 - JWT com role incluído no payload
 - Middleware de verificação de role
 - Verificação de permissões no banco de dados
@@ -358,6 +386,7 @@ CREATE TABLE logs_auditoria (
 - Hash seguro de senhas (bcrypt)
 
 ### 🎯 Boas Práticas:
+
 - **Altere a senha do admin após primeiro login**
 - **Não compartilhe credenciais de admin**
 - **Revise logs de auditoria regularmente**
@@ -385,15 +414,19 @@ Adicione estes scripts úteis:
 ## 🆘 Troubleshooting
 
 ### Erro: "Column 'avatar' doesn't exist"
+
 **Solução:** Execute a migração para remover a coluna avatar.
 
 ### Erro: "Unknown column 'role' in field list"
+
 **Solução:** Execute a migração para adicionar a coluna role.
 
 ### Erro: "Access denied" nas rotas admin
+
 **Solução:** Verifique se o token JWT inclui o campo `role` e se o usuário tem permissão.
 
 ### Erro: "Cannot login as admin"
+
 **Solução:** Verifique se a migração criou o usuário admin corretamente.
 
 ---
