@@ -799,19 +799,19 @@ document.addEventListener("DOMContentLoaded", () => {
       // Simular carregamento de mais pessoas
       const maisPessoas = [
         {
-          img: "../img/user4.jpg",
+          img: "https://ui-avatars.com/api/?name=Ana+C&background=10b981&color=fff&size=200&bold=true",
           nome: "Ana C.",
-          interesses: "Interesses: Arte Terapia, Leitura"
+          interesses: "Interesses: Culinária, Jardinagem"
         },
         {
-          img: "../img/user5.jpg",
+          img: "https://ui-avatars.com/api/?name=Pedro+L&background=f59e0b&color=fff&size=200&bold=true",
           nome: "Pedro L.",
-          interesses: "Interesses: Meditação, Yoga"
+          interesses: "Interesses: Esportes, Tecnologia"
         },
         {
-          img: "../img/user6.jpg",
+          img: "https://ui-avatars.com/api/?name=Rafael+P&background=ef4444&color=fff&size=200&bold=true",
           nome: "Rafael P.",
-          interesses: "Interesses: Música, Relaxamento"
+          interesses: "Interesses: Arte, Jogos"
         }
       ];
 

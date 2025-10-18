@@ -1,338 +1,336 @@
 <!doctype html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Início - EmoConnect</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-    <script src="../js/main.js"></script>
-  </head>
 
-  <body>
-    <!-- 🔒 Proteção de Rota - Verificar Autenticação -->
-    <script type="module">
-      import { redirectIfNotAuthenticated, getUserName } from "../js/auth.js";
-      redirectIfNotAuthenticated();
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Início - EmoConnect</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="../js/main.js"></script>
+</head>
 
-      // Atualizar nome do usuário quando a página carregar
-      window.addEventListener("DOMContentLoaded", () => {
-        const userNameElement = document.getElementById("user-name");
-        if (userNameElement) {
-          userNameElement.textContent = getUserName();
+<body>
+  <!-- 🔒 Proteção de Rota - Verificar Autenticação -->
+  <script type="module">
+    import { redirectIfNotAuthenticated, getUserName } from "../js/auth.js";
+    redirectIfNotAuthenticated();
+
+    // Atualizar nome do usuário quando a página carregar
+    window.addEventListener("DOMContentLoaded", () => {
+      const userNameElement = document.getElementById("user-name");
+      if (userNameElement) {
+        userNameElement.textContent = getUserName();
+      }
+    });
+  </script>
+
+  <header>
+    <div class="container">
+      <h1>🌟 EmoConnect</h1>
+      <p class="slogan">Conecte-se com suas emoções. Compartilhe. Inspire.</p>
+      <nav>
+        <ul>
+          <li><a href="index.html" class="active">Início</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="chat.html">Chat</a></li>
+          <li>
+            <a href="#" id="logout-btn" style="color: #ff4757">
+              <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <button id="toggle-theme" class="theme-toggle" title="Alternar tema">
+      🌙
+    </button>
+  </header>
+
+  <!-- Script de Logout -->
+  <script type="module">
+    import { logout } from "../js/auth.js";
+
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const confirmar = confirm("Deseja realmente sair?");
+        if (confirmar) {
+          await logout();
+          window.location.href = "/html/login.html";
         }
       });
-    </script>
+    }
+  </script>
 
-    <header>
-      <div class="container">
-        <h1>🌟 EmoConnect</h1>
-        <p class="slogan">Conecte-se com suas emoções. Compartilhe. Inspire.</p>
-        <nav>
-          <ul>
-            <li><a href="index.html" class="active">Início</a></li>
-            <li><a href="perfil.html">Perfil</a></li>
-            <li><a href="chat.html">Chat</a></li>
-            <li>
-              <a href="#" id="logout-btn" style="color: #ff4757">
-                <i class="fas fa-sign-out-alt"></i> Sair
-              </a>
-            </li>
-          </ul>
-        </nav>
+  <main>
+    <div class="welcome-banner">
+      <h2>Olá, <span id="user-name">Amigo</span>!</h2>
+      <p>
+        Hoje é <span id="current-date">Quarta-feira, 17 de setembro</span>
+      </p>
+    </div>
+
+    <section class="feelings">
+      <h2>Como você está se sentindo hoje?</h2>
+      <div class="moods-grid">
+        <button class="mood-card" data-mood="Feliz">
+          😊 <span>Feliz</span>
+        </button>
+        <button class="mood-card" data-mood="Triste">
+          😢 <span>Triste</span>
+        </button>
+        <button class="mood-card" data-mood="Cansado">
+          😴 <span>Cansado</span>
+        </button>
+        <button class="mood-card" data-mood="Estressado">
+          😤 <span>Estressado</span>
+        </button>
+        <button class="mood-card" data-mood="Ansioso">
+          😬 <span>Ansioso</span>
+        </button>
+        <button class="mood-card" data-mood="Calmo">
+          🧘 <span>Calmo</span>
+        </button>
+        <button class="mood-card" data-mood="Empolgado">
+          😄 <span>Empolgado</span>
+        </button>
+        <button class="mood-card" data-mood="Confuso">
+          🤔 <span>Confuso</span>
+        </button>
       </div>
-      <button id="toggle-theme" class="theme-toggle" title="Alternar tema">
-        🌙
+      <p id="mood-message"></p>
+    </section>
+
+    <div class="cards-row">
+      <button class="action-card" id="respirar">
+        <i class="fas fa-lungs"></i> Respirar
       </button>
-    </header>
+      <button class="action-card" id="atividades">
+        <i class="fas fa-list-check"></i> Atividades
+      </button>
+      <button class="action-card" id="progresso">
+        <i class="fas fa-chart-line"></i> Ver Progresso
+      </button>
+    </div>
 
-    <!-- Script de Logout -->
-    <script type="module">
-      import { logout } from "../js/auth.js";
-
-      const logoutBtn = document.getElementById("logout-btn");
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", async (e) => {
-          e.preventDefault();
-
-          const confirmar = confirm("Deseja realmente sair?");
-          if (confirmar) {
-            await logout();
-            window.location.href = "/html/login.html";
-          }
-        });
-      }
-    </script>
-
-    <main>
-      <div class="welcome-banner">
-        <h2>Olá, <span id="user-name">Amigo</span>!</h2>
-        <p>
-          Hoje é <span id="current-date">Quarta-feira, 17 de setembro</span>
-        </p>
-      </div>
-
-      <section class="feelings">
-        <h2>Como você está se sentindo hoje?</h2>
-        <div class="moods-grid">
-          <button class="mood-card" data-mood="Feliz">
-            😊 <span>Feliz</span>
-          </button>
-          <button class="mood-card" data-mood="Triste">
-            😢 <span>Triste</span>
-          </button>
-          <button class="mood-card" data-mood="Cansado">
-            😴 <span>Cansado</span>
-          </button>
-          <button class="mood-card" data-mood="Estressado">
-            😤 <span>Estressado</span>
-          </button>
-          <button class="mood-card" data-mood="Ansioso">
-            😬 <span>Ansioso</span>
-          </button>
-          <button class="mood-card" data-mood="Calmo">
-            🧘 <span>Calmo</span>
-          </button>
-          <button class="mood-card" data-mood="Empolgado">
-            😄 <span>Empolgado</span>
-          </button>
-          <button class="mood-card" data-mood="Confuso">
-            🤔 <span>Confuso</span>
-          </button>
-        </div>
-        <p id="mood-message"></p>
-      </section>
-
-      <div class="cards-row">
-        <button class="action-card" id="respirar">
-          <i class="fas fa-lungs"></i> Respirar
+    <section class="actions">
+      <h2>O que deseja fazer agora?</h2>
+      <div class="cards">
+        <button class="action-card" id="desabafar">
+          <i class="fas fa-comment-dots"></i> Desabafar
         </button>
-        <button class="action-card" id="atividades">
-          <i class="fas fa-list-check"></i> Atividades
+        <button class="action-card" id="relaxar">
+          <i class="fas fa-music"></i> Relaxar
         </button>
-        <button class="action-card" id="progresso">
-          <i class="fas fa-chart-line"></i> Ver Progresso
+        <button class="action-card" id="motivar">
+          <i class="fas fa-lightbulb"></i> Frase Motivacional
         </button>
       </div>
+    </section>
 
-      <section class="actions">
-        <h2>O que deseja fazer agora?</h2>
-        <div class="cards">
-          <button class="action-card" id="desabafar">
-            <i class="fas fa-comment-dots"></i> Desabafar
-          </button>
-          <button class="action-card" id="relaxar">
-            <i class="fas fa-music"></i> Relaxar
-          </button>
-          <button class="action-card" id="motivar">
-            <i class="fas fa-lightbulb"></i> Frase Motivacional
-          </button>
+    <section class="bem-estar-dicas">
+      <h2><i class="fas fa-seedling"></i> Dicas de Bem-estar</h2>
+      <div class="dicas-container" id="dicas-container">
+        <div class="dica-card">
+          <div class="dica-icon"><i class="fas fa-droplet"></i></div>
+          <h3>Hidratação</h3>
+          <p>
+            Beber água regularmente ajuda a manter o equilíbrio físico e
+            mental.
+          </p>
         </div>
-      </section>
-
-      <section class="bem-estar-dicas">
-        <h2><i class="fas fa-seedling"></i> Dicas de Bem-estar</h2>
-        <div class="dicas-container" id="dicas-container">
-          <div class="dica-card">
-            <div class="dica-icon"><i class="fas fa-droplet"></i></div>
-            <h3>Hidratação</h3>
-            <p>
-              Beber água regularmente ajuda a manter o equilíbrio físico e
-              mental.
-            </p>
-          </div>
-          <div class="dica-card">
-            <div class="dica-icon"><i class="fas fa-bed"></i></div>
-            <h3>Sono</h3>
-            <p>
-              Dormir 7-8 horas por noite melhora seu humor e sua capacidade
-              cognitiva.
-            </p>
-          </div>
-          <div class="dica-card">
-            <div class="dica-icon"><i class="fas fa-person-walking"></i></div>
-            <h3>Movimento</h3>
-            <p>
-              Apenas 30 minutos de atividade física diária pode reduzir a
-              ansiedade.
-            </p>
-          </div>
-          <div class="dica-card">
-            <div class="dica-icon"><i class="fas fa-book"></i></div>
-            <h3>Leitura</h3>
-            <p>Ler por 20 minutos reduz os níveis de estresse em até 68%.</p>
-          </div>
+        <div class="dica-card">
+          <div class="dica-icon"><i class="fas fa-bed"></i></div>
+          <h3>Sono</h3>
+          <p>
+            Dormir 7-8 horas por noite melhora seu humor e sua capacidade
+            cognitiva.
+          </p>
         </div>
-        <button id="mais-dicas" class="ver-mais">
-          Mais dicas <i class="fas fa-chevron-right"></i>
-        </button>
-      </section>
-
-      <section class="mural">
-        <h2><i class="fas fa-heart"></i> Mural de Apoio</h2>
-        <p>Deixe uma mensagem positiva para outras pessoas:</p>
-
-        <textarea
-          id="mensagem"
-          placeholder="Digite sua mensagem de apoio..."
-          rows="3"
-        ></textarea>
-        <div class="post-controls">
-          <select id="categoria-post">
-            <option value="geral">Geral</option>
-            <option value="motivacao">Motivação</option>
-            <option value="gratidao">Gratidão</option>
-            <option value="superacao">Superação</option>
-          </select>
-          <button id="postar"><i class="fas fa-paper-plane"></i> Postar</button>
+        <div class="dica-card">
+          <div class="dica-icon"><i class="fas fa-person-walking"></i></div>
+          <h3>Movimento</h3>
+          <p>
+            Apenas 30 minutos de atividade física diária pode reduzir a
+            ansiedade.
+          </p>
         </div>
-
-        <div class="filter-controls">
-          <button class="filter-btn active" data-filter="todos">Todos</button>
-          <button class="filter-btn" data-filter="motivacao">Motivação</button>
-          <button class="filter-btn" data-filter="gratidao">Gratidão</button>
-          <button class="filter-btn" data-filter="superacao">Superação</button>
-        </div>
-
-        <div id="mural-posts"></div>
-      </section>
-
-      <section class="progresso-emocional" id="secao-progresso">
-        <h2><i class="fas fa-chart-line"></i> Seu Progresso Emocional</h2>
-
-        <div class="tabs-container">
-          <div class="tab-buttons">
-            <button class="tab-btn active" data-tab="semanal">Semanal</button>
-            <button class="tab-btn" data-tab="mensal">Mensal</button>
-            <button class="tab-btn" data-tab="categorias">Categorias</button>
-          </div>
-
-          <div class="tab-content active" id="tab-semanal">
-            <h3>Últimos 7 dias</h3>
-            <div class="chart-container" id="chart-semanal">
-              <!-- Gerado via JavaScript -->
-            </div>
-          </div>
-
-          <div class="tab-content" id="tab-mensal">
-            <h3>Visão do Mês</h3>
-            <div class="calendar-container" id="calendar-mensal">
-              <!-- Gerado via JavaScript -->
-            </div>
-          </div>
-
-          <div class="tab-content" id="tab-categorias">
-            <h3>Distribuição de Emoções</h3>
-            <div class="pie-container" id="pie-categorias">
-              <!-- Gerado via JavaScript -->
-            </div>
-          </div>
-        </div>
-
-        <div class="insights">
-          <h3>Insights</h3>
-          <p id="analise-emocional">Carregando análise...</p>
-        </div>
-      </section>
-
-      <section class="comunidade">
-        <h2><i class="fas fa-users"></i> Conecte-se</h2>
-        <p>Pessoas que podem estar passando por experiências semelhantes:</p>
-
-        <div class="comunidade-cards">
-          <div class="comunidade-card">
-            <img src="../img/user1.jpg" alt="Perfil" class="comunidade-img" />
-            <h3>Maria S.</h3>
-            <p>Interesses: Ansiedade, Meditação</p>
-            <button class="connect-btn">Conectar</button>
-          </div>
-
-          <div class="comunidade-card">
-            <img src="../img/user2.jpg" alt="Perfil" class="comunidade-img" />
-            <h3>João P.</h3>
-            <p>Interesses: Sono, Exercícios</p>
-            <button class="connect-btn">Conectar</button>
-          </div>
-
-          <div class="comunidade-card">
-            <img src="../img/user3.jpg" alt="Perfil" class="comunidade-img" />
-            <h3>Ana R.</h3>
-            <p>Interesses: Estresse, Respiração</p>
-            <button class="connect-btn">Conectar</button>
-          </div>
-        </div>
-
-        <button id="ver-mais-pessoas" class="ver-mais">
-          Ver mais pessoas <i class="fas fa-chevron-right"></i>
-        </button>
-      </section>
-
-      <div class="respiracao-overlay" id="respiracao">
-        <div class="circulo" id="circulo"></div>
-        <p id="fase">Inspire...</p>
-        <button id="fechar-respirar">Fechar</button>
-      </div>
-
-      <div class="atividades-overlay" id="atividades-overlay">
-        <div class="atividades-container">
-          <h2>Atividades de Bem-estar</h2>
-          <div class="atividades-lista">
-            <div class="atividade-item">
-              <input type="checkbox" id="atividade1" />
-              <label for="atividade1">Beber 2 litros de água</label>
-            </div>
-            <div class="atividade-item">
-              <input type="checkbox" id="atividade2" />
-              <label for="atividade2">Praticar 10 minutos de meditação</label>
-            </div>
-            <div class="atividade-item">
-              <input type="checkbox" id="atividade3" />
-              <label for="atividade3">Alongar-se por 5 minutos</label>
-            </div>
-            <div class="atividade-item">
-              <input type="checkbox" id="atividade4" />
-              <label for="atividade4">Dar uma pausa da tela</label>
-            </div>
-            <div class="atividade-item">
-              <input type="checkbox" id="atividade5" />
-              <label for="atividade5">Anotar 3 coisas positivas do dia</label>
-            </div>
-          </div>
-          <button id="adicionar-atividade">+ Nova Atividade</button>
-          <button id="fechar-atividades">Fechar</button>
+        <div class="dica-card">
+          <div class="dica-icon"><i class="fas fa-book"></i></div>
+          <h3>Leitura</h3>
+          <p>Ler por 20 minutos reduz os níveis de estresse em até 68%.</p>
         </div>
       </div>
-    </main>
+      <button id="mais-dicas" class="ver-mais">
+        Mais dicas <i class="fas fa-chevron-right"></i>
+      </button>
+    </section>
 
-    <footer>
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>EmoConnect</h3>
-          <p>Conectando você com suas emoções</p>
+    <section class="mural">
+      <h2><i class="fas fa-heart"></i> Mural de Apoio</h2>
+      <p>Deixe uma mensagem positiva para outras pessoas:</p>
+
+      <textarea id="mensagem" placeholder="Digite sua mensagem de apoio..." rows="3"></textarea>
+      <div class="post-controls">
+        <select id="categoria-post">
+          <option value="geral">Geral</option>
+          <option value="motivacao">Motivação</option>
+          <option value="gratidao">Gratidão</option>
+          <option value="superacao">Superação</option>
+        </select>
+        <button id="postar"><i class="fas fa-paper-plane"></i> Postar</button>
+      </div>
+
+      <div class="filter-controls">
+        <button class="filter-btn active" data-filter="todos">Todos</button>
+        <button class="filter-btn" data-filter="motivacao">Motivação</button>
+        <button class="filter-btn" data-filter="gratidao">Gratidão</button>
+        <button class="filter-btn" data-filter="superacao">Superação</button>
+      </div>
+
+      <div id="mural-posts"></div>
+    </section>
+
+    <section class="progresso-emocional" id="secao-progresso">
+      <h2><i class="fas fa-chart-line"></i> Seu Progresso Emocional</h2>
+
+      <div class="tabs-container">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="semanal">Semanal</button>
+          <button class="tab-btn" data-tab="mensal">Mensal</button>
+          <button class="tab-btn" data-tab="categorias">Categorias</button>
         </div>
-        <div class="footer-section">
-          <h3>Links Rápidos</h3>
-          <ul>
-            <li><a href="index.html">Início</a></li>
-            <li><a href="perfil.html">Perfil</a></li>
-            <li><a href="chat.html">Chat</a></li>
-          </ul>
+
+        <div class="tab-content active" id="tab-semanal">
+          <h3>Últimos 7 dias</h3>
+          <div class="chart-container" id="chart-semanal">
+            <!-- Gerado via JavaScript -->
+          </div>
         </div>
-        <div class="footer-section">
-          <h3>Siga-nos</h3>
-          <div class="social-icons">
-            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+
+        <div class="tab-content" id="tab-mensal">
+          <h3>Visão do Mês</h3>
+          <div class="calendar-container" id="calendar-mensal">
+            <!-- Gerado via JavaScript -->
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-categorias">
+          <h3>Distribuição de Emoções</h3>
+          <div class="pie-container" id="pie-categorias">
+            <!-- Gerado via JavaScript -->
           </div>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 EmoConnect. Você não está sozinho.</p>
+
+      <div class="insights">
+        <h3>Insights</h3>
+        <p id="analise-emocional">Carregando análise...</p>
       </div>
-    </footer>
-  </body>
+    </section>
+
+    <section class="comunidade">
+      <h2><i class="fas fa-users"></i> Conecte-se</h2>
+      <p>Pessoas que podem estar passando por experiências semelhantes:</p>
+
+      <div class="comunidade-cards">
+        <div class="comunidade-card">
+          <img src="https://ui-avatars.com/api/?name=Maria+S&background=7c3aed&color=fff&size=200&bold=true"
+            alt="Perfil" class="comunidade-img" />
+          <h3>Maria S.</h3>
+          <p>Interesses: Fotografia, Viagens</p>
+          <button class="connect-btn">Conectar</button>
+        </div>
+
+        <div class="comunidade-card">
+          <img src="https://ui-avatars.com/api/?name=Joao+P&background=3b82f6&color=fff&size=200&bold=true" alt="Perfil"
+            class="comunidade-img" />
+          <h3>João P.</h3>
+          <p>Interesses: Música, Cinema</p>
+          <button class="connect-btn">Conectar</button>
+        </div>
+
+        <div class="comunidade-card">
+          <img src="https://ui-avatars.com/api/?name=Ana+R&background=ec4899&color=fff&size=200&bold=true" alt="Perfil"
+            class="comunidade-img" />
+          <h3>Ana R.</h3>
+          <p>Interesses: Livros, Café</p>
+          <button class="connect-btn">Conectar</button>
+        </div>
+      </div>
+
+      <button id="ver-mais-pessoas" class="ver-mais">
+        Ver mais pessoas <i class="fas fa-chevron-right"></i>
+      </button>
+    </section>
+
+    <div class="respiracao-overlay" id="respiracao">
+      <div class="circulo" id="circulo"></div>
+      <p id="fase">Inspire...</p>
+      <button id="fechar-respirar">Fechar</button>
+    </div>
+
+    <div class="atividades-overlay" id="atividades-overlay">
+      <div class="atividades-container">
+        <h2>Atividades de Bem-estar</h2>
+        <div class="atividades-lista">
+          <div class="atividade-item">
+            <input type="checkbox" id="atividade1" />
+            <label for="atividade1">Beber 2 litros de água</label>
+          </div>
+          <div class="atividade-item">
+            <input type="checkbox" id="atividade2" />
+            <label for="atividade2">Praticar 10 minutos de meditação</label>
+          </div>
+          <div class="atividade-item">
+            <input type="checkbox" id="atividade3" />
+            <label for="atividade3">Alongar-se por 5 minutos</label>
+          </div>
+          <div class="atividade-item">
+            <input type="checkbox" id="atividade4" />
+            <label for="atividade4">Dar uma pausa da tela</label>
+          </div>
+          <div class="atividade-item">
+            <input type="checkbox" id="atividade5" />
+            <label for="atividade5">Anotar 3 coisas positivas do dia</label>
+          </div>
+        </div>
+        <button id="adicionar-atividade">+ Nova Atividade</button>
+        <button id="fechar-atividades">Fechar</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>EmoConnect</h3>
+        <p>Conectando você com suas emoções</p>
+      </div>
+      <div class="footer-section">
+        <h3>Links Rápidos</h3>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="chat.html">Chat</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Siga-nos</h3>
+        <div class="social-icons">
+          <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 EmoConnect. Você não está sozinho.</p>
+    </div>
+  </footer>
+</body>
+
 </html>
